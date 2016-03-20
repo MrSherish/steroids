@@ -7,13 +7,20 @@ set(CLIENT steroids)
 project(${PROJECT})
 include(FindPkgConfig)
 
+set(COMMON_SOURCES
+    common/net.h
+    common/net.cpp
+    common/Packet.h
+    common/Socket.h
+    common/Socket.cpp)
+
 set(SERVER_SOURCES
-    server/main.cpp
-)
+    ${COMMON_SOURCES}
+    server/main.cpp)
 
 set(CLIENT_SOURCES
-    client/main.cpp
-)
+    ${COMMON_SOURCES}
+    client/main.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 

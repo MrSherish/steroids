@@ -1,71 +1,48 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "../common/net.h"
+#include "../common/Packet.h"
+#include "../common/Socket.h"
 
+#include "../common/json.hpp"
 #include <SDL_net.h>
 
-int main(int argc, char **argv)
-{
-    UDPsocket sd;
-    IPaddress srvadd;
-    UDPpacket *p;
-    int quit;
-    
+using nlohmann::json;
+
+int main(int argc, char **argv) {
     /* Check for parameters */
-    if (argc < 3)
-    {
+    if (argc < 3) {
         fprintf(stderr, "Usage: %s host port\n", argv[0]);
         exit(EXIT_FAILURE);
     }
-    
-    /* Initialize SDL_net */
-    if (SDLNet_Init() < 0)
-    {
-        fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-    
-    /* Open a socket on random port */
-    if (!(sd = SDLNet_UDP_Open(0)))
-    {
-        fprintf(stderr, "SDLNet_UDP_Open: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-    
-    /* Resolve server name  */
-    if (SDLNet_ResolveHost(&srvadd, argv[1], atoi(argv[2])) == -1)
-    {
-        fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", argv[1], atoi(argv[2]), SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-    
-    /* Allocate memory for the packet */
-    if (!(p = SDLNet_AllocPacket(512)))
-    {
-        fprintf(stderr, "SDLNet_AllocPacket: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-    
-    /* Main loop */
-    quit = 0;
-    while (!quit)
-    {
-        printf("Fill the buffer\n>");
-        scanf("%s", (char *)p->data);
-        
-        p->address.host = srvadd.host;	/* Set the destination host */
-        p->address.port = srvadd.port;	/* And destination port */
-        
-        p->len = strlen((char *)p->data) + 1;
-        SDLNet_UDP_Send(sd, -1, p); /* This sets the p->channel */
-        
-        /* Quit if packet contains "quit" */
-        if (!strcmp((char *)p->data, "quit"))
+
+    net::init();
+
+    Socket socket(Socket::ANY_PORT);
+
+    std::string serverHost = argv[1];
+    uint16_t serverPort = (uint16_t) atoi(argv[2]);
+    uint32_t serverIp = net::resolveHost(serverHost, serverPort);
+
+    int quit = 0;
+    while (!quit) {
+        Packet p;
+        p.ip = serverIp;
+        p.port = serverPort;
+
+        std::string s;
+        std::cout << "> ";
+        std::cin >> s;
+
+        json j = s;
+        p.data = j;
+
+        socket.send(p);
+
+        if (s == "quit") {
             quit = 1;
+        }
     }
-    
-    SDLNet_FreePacket(p);
-    SDLNet_Quit();
-    
+
+    net::quit();
+
     return EXIT_SUCCESS;
 }
