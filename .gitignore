@@ -1,6 +1,7 @@
 build/
 out/
 .idea/
+MainProject/
 
 # Compiled Object files
 *.slo

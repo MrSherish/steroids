@@ -6,7 +6,7 @@ using nlohmann::json;
 
 static void sendMessage(Socket &s, json j) {
     uint32_t serverIp = net::resolveHost(SERVER_HOST, Server::PORT);
-    Packet p {serverIp, Server::PORT};
+    Packet p {serverIp, (uint16_t)Server::PORT};
     p.data = j;
 
     s.send(p);
