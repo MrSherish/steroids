@@ -1,3 +1,4 @@
+#include <climits>
 #include "Server.h"
 
 const int SERVER_TICKRATE = 128;
@@ -160,7 +161,7 @@ void Server::run() {
     restart();
 
     int ticks = 0;
-    while (1) {
+    while (ticks != INT_MAX) {
         receiveMessages();
         sendMessages();
 
