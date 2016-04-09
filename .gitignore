@@ -1,7 +1,13 @@
 build/
 out/
 .idea/
-MainProject/
+
+MainProject/.vs
+MainProject/packages
+MainProject/Debug
+MainProject/Server/Debug
+MainProject/Client/Debug
+MainProject/MainProject.VC.db
 
 # Compiled Object files
 *.slo
