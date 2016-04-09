@@ -9,6 +9,7 @@ const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH;
 const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
 const int CLIENT_TICKRATE = 128;
 const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
+const int HEARTBEAT_RATE = 100;
 
 
 
@@ -95,7 +96,7 @@ Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
     window = SDL_CreateWindow(
             TITLE,
             SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
             WINDOW_WIDTH,
             WINDOW_HEIGHT,
             SDL_WINDOW_SHOWN
@@ -114,12 +115,15 @@ Window::~Window() {
 }
 
 void Window::enterEventLoop() {
+    int ticks = 0;
     while (!quit)
     {
         handleEvents();
         client.receiveMessages();
         render();
         SDL_Delay(CLIENT_TICK_DELAY);
+        if (ticks % HEARTBEAT_RATE) client.heartbeat();
+        ticks++;
     }
 }
 

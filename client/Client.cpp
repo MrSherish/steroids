@@ -127,7 +127,9 @@ void Client::addSnake(int playerId, Color color) {
     arena.snakes.push_back(snake);
 }
 
+void Client::heartbeat() {
 
+}
 
 
 
