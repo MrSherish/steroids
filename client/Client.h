@@ -36,6 +36,8 @@ public:
 
     void changeDir(vec2 dir);
 
+	void heartbeat(){}
+
 };
 
 
