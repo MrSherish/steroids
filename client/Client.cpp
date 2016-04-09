@@ -128,7 +128,10 @@ void Client::addSnake(int playerId, Color color) {
 }
 
 void Client::heartbeat() {
-
+    sendMessage({
+        { "message", "heartbeat" },
+        { "id", myPlayerId}
+    });
 }
 
 
