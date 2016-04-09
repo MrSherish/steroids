@@ -4,7 +4,7 @@
 
 #include <SDL_net.h>
 #include "../common/net.h"
-#include "../common/Server.h"
+#include "Server.h"
 
 int main(int argc, char **argv) {
     net::init();

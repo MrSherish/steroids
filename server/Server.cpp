@@ -1,6 +1,8 @@
 #include "Server.h"
 
-const int TICK_DELAY = 128;
+const int SERVER_TICKRATE = 128;
+const int SERVER_TICK_DELAY = 1000 / SERVER_TICKRATE;
+const int ARENA_TICKRATE = 8;
 
 using nlohmann::json;
 
@@ -152,10 +154,16 @@ void Server::tick() {
 void Server::run() {
     restart();
 
+    int ticks = 0;
     while (1) {
         receiveMessages();
         sendMessages();
-        tick();
-        SDL_Delay(TICK_DELAY);
+
+        if(ticks % (SERVER_TICKRATE / ARENA_TICKRATE) == 0) {
+            tick();
+        }
+
+        SDL_Delay(SERVER_TICK_DELAY);
+        ++ticks;
     }
 }
