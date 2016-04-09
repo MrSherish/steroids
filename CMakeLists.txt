@@ -7,20 +7,36 @@ set(CLIENT steroids)
 project(${PROJECT})
 include(FindPkgConfig)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/out")
+
 set(COMMON_SOURCES
-    common/net.h
-    common/net.cpp
-    common/Packet.h
-    common/Socket.h
-    common/Socket.cpp)
+        common/net.h
+        common/net.cpp
+        common/Packet.h
+        common/Socket.h
+        common/Socket.cpp
+        common/Snake.h
+        common/Snake.cpp
+        common/vec2.h
+        common/vec2.cpp
+        common/Color.h
+        common/Color.cpp
+        common/Arena.h
+        common/Arena.cpp
+        common/Server.h
+        common/Server.cpp)
 
 set(SERVER_SOURCES
-    ${COMMON_SOURCES}
-    server/main.cpp)
+        ${COMMON_SOURCES}
+        server/main.cpp)
 
 set(CLIENT_SOURCES
-    ${COMMON_SOURCES}
-    client/main.cpp)
+        ${COMMON_SOURCES}
+        client/main.cpp
+        client/Window.h
+        client/Window.cpp
+        client/Client.h
+        client/Client.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
