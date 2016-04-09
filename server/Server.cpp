@@ -49,9 +49,12 @@ static Snake makeSnake(int playerId) {
 
 void Server::onConnect(Packet p) {
     json j = p.data;
+    uint8_t r = j["color"][0];
+    uint8_t g = j["color"][1];
+    uint8_t b = j["color"][2];
+    Color color {r, g, b};
 
     int playerId = getPlayerId(p.ip, p.port);
-
     if (playerId == 0) {
         Player newPlayer;
         newPlayer.playerId = ++nextPlayerId;
@@ -69,11 +72,13 @@ void Server::onConnect(Packet p) {
         json cj = {
                 {"message", "playerConnected"},
                 {"playerId", newPlayer.playerId},
-                {"nick", newPlayer.nick}
+                {"nick", newPlayer.nick},
+                {"color", color.toJson()}
         };
         broadcast(cj);
 
         Snake snake = makeSnake(newPlayer.playerId);
+        snake.color = color;
         arena.snakes.push_back(snake);
 
         snakeMoved(snake);

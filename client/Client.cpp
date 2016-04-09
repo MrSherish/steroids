@@ -53,7 +53,9 @@ void Client::receiveMessages() {
 void Client::onPlayerConnected(json j) {
     int playerId = j["playerId"];
     std::string nick = j["nick"];
+    Color color = Color::fromJson(j["color"]);
     addPlayer(playerId, nick);
+    addSnake(playerId, color);
 }
 
 static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec) {
@@ -80,18 +82,30 @@ void Client::onSnakeMoved(json j) {
         Snake &s = *it;
         s.segments = makeSegments(vec);
     } else {
-//        std::cerr << "No snake found for player #" << playerId << std::endl;
-        Snake snake;
-        snake.playerId = playerId;
-        snake.segments = makeSegments(vec);
-        arena.snakes.push_back(snake);
+        std::cerr << "No snake found for player #" << playerId << std::endl;
     }
 }
 
 Client::Client(Arena &world, std::string nick) : socket(Socket::ANY_PORT), arena(world) {
+    uint8_t r = (uint8_t) rand();
+    uint8_t g = (uint8_t) rand();
+    uint8_t b = (uint8_t) rand();
+
+    std::vector<int> vec {r, g, b};
+
     sendMessage(socket, {
             {"message", "connect"},
-            {"nick", nick}
+            {"nick", nick},
+            {"color", vec}
     });
 }
+
+void Client::addSnake(int playerId, Color color) {
+    Snake snake;
+    snake.playerId = playerId;
+    snake.color = color;
+    arena.snakes.push_back(snake);
+}
+
+
 

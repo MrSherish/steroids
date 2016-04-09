@@ -8,6 +8,7 @@
 
 int main (int argc, char** argv)
 {
+    srand((unsigned)time(nullptr));
     net::init();
 
     Window window;

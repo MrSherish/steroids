@@ -21,8 +21,6 @@ void Window::render() {
     for (const Snake &s : arena.snakes) {
         Color c = s.color;
 
-        c = {255, 0, 0, 255}; // HACK
-
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 
         for (Snake::Segment seg : s.segments) {

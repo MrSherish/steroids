@@ -27,6 +27,7 @@ public:
 
     void changeDir(vec2 dir);
 
+    void addSnake(int id, Color color);
 };
 
 
