@@ -14,7 +14,19 @@ private:
     Arena &arena;
     int myPlayerId = 0;
 
-    void addPlayer(int playerId, std::string nick);
+    void addPlayer(int playerId, std::string nick, Color color);
+
+    void addSnake(int playerId, Color color);
+
+    void onPlayerConnected(json j);
+
+    void onSnakeMoved(json j);
+
+    void sendMessage(json j);
+
+    void onHello(json json);
+
+    void addPlayer(json j);
 
 public:
 
@@ -22,15 +34,8 @@ public:
 
     void receiveMessages();
 
-    void onPlayerConnected(json j);
-
-    void onSnakeMoved(json j);
-
     void changeDir(vec2 dir);
 
-    void addSnake(int id, Color color);
-
-    void sendMessage(json j);
 };
 
 

@@ -57,6 +57,17 @@ void Server::onConnect(Packet p) {
 
     int playerId = getPlayerId(p.ip, p.port);
     if (playerId == 0) {
+        std::vector<json> players;
+        for(auto & player : arena.players) {
+            Snake & snake = getPlayerSnake(player.playerId);
+            json pj = {
+                    {"playerId", player.playerId},
+                    {"nick", player.nick},
+                    {"color", snake.color.toJson()}
+            };
+            players.push_back(pj);
+        }
+
         Player newPlayer;
         newPlayer.playerId = ++nextPlayerId;
         newPlayer.ip = p.ip;
@@ -66,7 +77,8 @@ void Server::onConnect(Packet p) {
 
         p.data = {
                 {"message", "hello"},
-                {"playerId", newPlayer.playerId}
+                {"playerId", newPlayer.playerId},
+                {"players", players}
         };
         socket.send(p);
 

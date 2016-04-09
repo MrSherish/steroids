@@ -12,12 +12,24 @@ void Client::sendMessage(json j) {
     socket.send(p);
 }
 
-void Client::addPlayer(int playerId, std::string nick) {
+void Client::addPlayer(int playerId, std::string nick, Color color) {
     Player player;
     player.playerId = playerId;
     player.nick = nick;
     arena.players.push_back(player);
+
+    addSnake(playerId, color);
 }
+
+
+
+void Client::addPlayer(json j) {
+    int playerId = j["playerId"];
+    std::string nick = j["nick"];
+    Color color = Color::fromJson(j["color"]);
+    addPlayer(playerId, nick, color);
+}
+
 
 void Client::changeDir(vec2 dir) {
     std::vector<int> vec {dir.x, dir.y};
@@ -41,7 +53,7 @@ void Client::receiveMessages() {
         std::string message = j["message"];
 
         if (message == "hello") {
-            myPlayerId = j["playerId"];
+            onHello(j);
         } else if (message == "playerConnected") {
             onPlayerConnected(j);
         } else if (message == "snakeMoved") {
@@ -50,12 +62,16 @@ void Client::receiveMessages() {
     }
 }
 
+void Client::onHello(json j) {
+    myPlayerId = j["playerId"];
+    std::vector<json> players = j["players"];
+    for(auto &pj : players) {
+        addPlayer(pj);
+    }
+}
+
 void Client::onPlayerConnected(json j) {
-    int playerId = j["playerId"];
-    std::string nick = j["nick"];
-    Color color = Color::fromJson(j["color"]);
-    addPlayer(playerId, nick);
-    addSnake(playerId, color);
+    addPlayer(j);
 }
 
 static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec) {
@@ -110,6 +126,8 @@ void Client::addSnake(int playerId, Color color) {
     snake.color = color;
     arena.snakes.push_back(snake);
 }
+
+
 
 
 
