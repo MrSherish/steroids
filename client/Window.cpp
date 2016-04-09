@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "../common/Server.h"
+#include "../server/Server.h"
 
 const auto TITLE = "Snake";
 
@@ -7,6 +7,10 @@ const auto SEGMENT_WIDTH = 32; // px
 const auto SEGMENT_HEIGHT = SEGMENT_WIDTH; // px
 const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH;
 const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
+const int CLIENT_TICKRATE = 128;
+const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
+
+
 
 const auto NICK = "player0";
 
@@ -117,7 +121,7 @@ void Window::enterEventLoop() {
         handleEvents();
         client.receiveMessages();
         render();
-        SDL_Delay(256);
+        SDL_Delay(CLIENT_TICK_DELAY);
     }
 }
 

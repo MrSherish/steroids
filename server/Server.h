@@ -2,8 +2,8 @@
 #define STEROIDS_SERVER_H
 
 
-#include "Socket.h"
-#include "Arena.h"
+#include "../common/Socket.h"
+#include "../common/Arena.h"
 
 using nlohmann::json;
 
@@ -30,8 +30,8 @@ private:
 
 public:
 
-    static const auto ARENA_WIDTH = 32; // segments
-    static const auto ARENA_HEIGHT = 32; // segments
+    static const auto ARENA_WIDTH = 16; // segments
+    static const auto ARENA_HEIGHT = 16; // segments
     static const int PORT = 28666;
 
     Server(Arena &world);

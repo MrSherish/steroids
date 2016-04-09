@@ -4,7 +4,7 @@
 #include "../common/Socket.h"
 #include "../common/Arena.h"
 #include "../common/net.h"
-#include "../common/Server.h"
+#include "../server/Server.h"
 
 class Client {
 private:

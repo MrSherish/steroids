@@ -23,14 +23,14 @@ set(COMMON_SOURCES
         common/Color.cpp
         common/Arena.h
         common/Arena.cpp
-        common/Server.h
-        common/Server.cpp
         common/Player.h
         common/Player.cpp )
 
 set(SERVER_SOURCES
         ${COMMON_SOURCES}
-        server/main.cpp)
+        server/main.cpp
+        server/Server.h
+        server/Server.cpp)
 
 set(CLIENT_SOURCES
         ${COMMON_SOURCES}

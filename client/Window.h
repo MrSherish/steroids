@@ -8,7 +8,7 @@
 
 #include "Client.h"
 #include "../common/Arena.h"
-#include "../common/Server.h"
+#include "../server/Server.h"
 
 class Window {
 private:
