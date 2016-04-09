@@ -92,8 +92,8 @@ Window::Window() : client(arena, NICK) {
 
     window = SDL_CreateWindow(
             TITLE,
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
             WINDOW_WIDTH,
             WINDOW_HEIGHT,
             SDL_WINDOW_SHOWN
