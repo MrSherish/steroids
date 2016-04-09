@@ -24,7 +24,9 @@ set(COMMON_SOURCES
         common/Arena.h
         common/Arena.cpp
         common/Server.h
-        common/Server.cpp)
+        common/Server.cpp
+        common/Player.h
+        common/Player.cpp )
 
 set(SERVER_SOURCES
         ${COMMON_SOURCES}

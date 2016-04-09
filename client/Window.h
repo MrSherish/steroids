@@ -19,8 +19,6 @@ private:
 
     Arena arena;
     Client client;
-    Server server; // HACK
-    vec2 dir;
 
     void handleEvents();
 

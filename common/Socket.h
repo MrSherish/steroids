@@ -27,6 +27,8 @@ public:
 
     void send(const Packet &packet);
 
+    bool receive(Packet &packet);
+
 };
 
 #endif //STEROIDS_SOCKET_H

@@ -8,8 +8,12 @@
 
 int main (int argc, char** argv)
 {
+    net::init();
+
     Window window;
     window.enterEventLoop();
+
+    net::quit();
 
     return EXIT_SUCCESS;
 }

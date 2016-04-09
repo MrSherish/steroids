@@ -8,6 +8,8 @@
 
 constexpr int PACKET_SIZE = 1024;
 
+using nlohmann::json;
+
 Socket::Socket(uint16_t port) {
     sd = SDLNet_UDP_Open(port);
     assert(sd);
@@ -37,4 +39,21 @@ void Socket::send(const Packet &packet) {
 }
 
 
+bool Socket::receive(Packet &packet) {
+    if (SDLNet_UDP_Recv(sd, pt)) {
+        char *data = (char*) pt->data;
+        data[PACKET_SIZE - 1] = '\0';
 
+        std::string js = data;
+        json j = json::parse(js);
+
+        packet.ip = SDLNet_Read32(&pt->address.host);
+        packet.port = SDLNet_Read16(&pt->address.port);
+
+        packet.data = j;
+
+        return true;
+    } else {
+        return false;
+    }
+}

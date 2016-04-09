@@ -13,14 +13,17 @@ struct Snake {
         vec2 pos;
         bool fat = false;
 
-        Segment(vec2 pos, bool fat) : pos(pos), fat(fat) {}
+        Segment(vec2 pos, bool fat = false) : pos(pos), fat(fat) {}
     };
 
+    int playerId = 0;
     std::deque<Segment> segments;
     vec2 dir;
     Color color;
 
     Snake(vec2 pos, vec2 dir, Color color);
+
+    Snake() = default;
 
     void proceed(int arenaWidth, int arenaHeight);
 };
