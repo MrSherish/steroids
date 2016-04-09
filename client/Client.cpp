@@ -4,12 +4,12 @@ const auto SERVER_HOST = "localhost";
 
 using nlohmann::json;
 
-static void sendMessage(Socket &s, json j) {
-    uint32_t serverIp = net::resolveHost(SERVER_HOST, Server::PORT);
+void Client::sendMessage(json j) {
+    uint32_t serverIp = net::resolveHost(serverHost, Server::PORT);
     Packet p {serverIp, (uint16_t)Server::PORT};
     p.data = j;
 
-    s.send(p);
+    socket.send(p);
 }
 
 void Client::addPlayer(int playerId, std::string nick) {
@@ -21,7 +21,7 @@ void Client::addPlayer(int playerId, std::string nick) {
 
 void Client::changeDir(vec2 dir) {
     std::vector<int> vec {dir.x, dir.y};
-    sendMessage(socket, {
+    sendMessage({
             {"message", "dir"},
             {"dir", vec}
     });
@@ -86,14 +86,18 @@ void Client::onSnakeMoved(json j) {
     }
 }
 
-Client::Client(Arena &world, std::string nick) : socket(Socket::ANY_PORT), arena(world) {
+Client::Client(
+        Arena &world,
+        std::string serverHost,
+        std::string nick
+) : socket(Socket::ANY_PORT), serverHost(serverHost), arena(world) {
     uint8_t r = (uint8_t) rand();
     uint8_t g = (uint8_t) rand();
     uint8_t b = (uint8_t) rand();
 
     std::vector<int> vec {r, g, b};
 
-    sendMessage(socket, {
+    sendMessage({
             {"message", "connect"},
             {"nick", nick},
             {"color", vec}
@@ -106,6 +110,7 @@ void Client::addSnake(int playerId, Color color) {
     snake.color = color;
     arena.snakes.push_back(snake);
 }
+
 
 
 

@@ -10,6 +10,7 @@ class Client {
 private:
 
     Socket socket;
+    std::string serverHost;
     Arena &arena;
     int myPlayerId = 0;
 
@@ -17,7 +18,7 @@ private:
 
 public:
 
-    Client(Arena &world, std::string nick);
+    Client(Arena &world, std::string serverHost, std::string nick);
 
     void receiveMessages();
 
@@ -28,6 +29,8 @@ public:
     void changeDir(vec2 dir);
 
     void addSnake(int id, Color color);
+
+    void sendMessage(json j);
 };
 
 

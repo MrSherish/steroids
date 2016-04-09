@@ -89,7 +89,7 @@ void Window::handleEvents() {
     }
 }
 
-Window::Window() : client(arena, NICK) {
+Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
 
     window = SDL_CreateWindow(

@@ -26,7 +26,7 @@ private:
 
 public:
 
-    Window();
+    Window(std::string serverHost);
 
     ~Window();
 
