@@ -5,6 +5,7 @@ set(SERVER steroids_server)
 set(CLIENT steroids)
 
 project(${PROJECT})
+include(FindPkgConfig)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/out")
 
@@ -41,12 +42,9 @@ set(CLIENT_SOURCES
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SDL2_INCLUDE_DIRS SDL2_all/include)
-set(SDL2_LIBRARY_DIRS SDL2_all)
-set(SDL2IMAGE_INCLUDE_DIRS SDL2_all/include)
-set(SDL2IMAGE_LIBRARY_DIRS SDL2_all)
-set(SDL2NET_INCLUDE_DIRS SDL2_all/include)
-set(SDL2NET_LIBRARY_DIRS SDL2_all)
+pkg_search_module(SDL2 REQUIRED sdl2)
+pkg_search_module(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+pkg_search_module(SDL2NET REQUIRED SDL2_net>=2.0.0)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2NET_INCLUDE_DIRS})
 link_directories(${SDL2_LIBRARY_DIRS} ${SDL2IMAGE_LIBRARY_DIRS} ${SDL2NET_LIBRARY_DIRS})
