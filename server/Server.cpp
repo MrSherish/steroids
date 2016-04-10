@@ -254,7 +254,7 @@ void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &sna
             snakesToKill.push_back(&a);
             snakesToKill.push_back(&b);
         }
-    } else if(ah_ == bh && bh_ == ah) {
+    } else if(ah_ == bh && bh_ == ah && ai != bi) {
         std::cerr << "Head-on collision type B " << a.playerId << ":" << b.playerId << std::endl;
         snakesToKill.push_back(&a);
         snakesToKill.push_back(&b);
