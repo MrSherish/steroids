@@ -37,7 +37,6 @@ void Window::render() {
         }
     }
 
-
     for (Fruit f : arena.fruits) {
         SDL_SetRenderDrawColor(renderer, 75, 75, 75, 0);
 
@@ -57,9 +56,36 @@ void Window::render() {
         r.h = SEGMENT_HEIGHT/3;
 
         SDL_RenderFillRect(renderer, &r);
+		
+    std::vector<Client::Announcement> announcementsToDisplay = client.checkAnnouncements();
+    int annoucementYOffset = 10;
+    for (Client::Announcement a : announcementsToDisplay) {
+        drawString(a.getMessage(), 10, WINDOW_HEIGHT - annoucementYOffset);
+        annoucementYOffset += 12;
     }
 
     SDL_RenderPresent(renderer);
+}
+
+void Window::drawString(std::string str, int x, int y) {
+        SDL_Rect s, d;
+        s.w = s.h = d.w = d.h = 8;
+        d.x = x;
+        d.y = y;
+        const char *text = str.c_str();
+        while (*text) {
+            if (*text == '\n') {
+                d.y += 8;
+                d.x = x;
+            }
+            else {
+                s.x = (*text % 16) * 8;
+                s.y = (*text / 16) * 8;
+                SDL_RenderCopy(renderer, charset, &s, &d);
+                d.x += 8;
+            }
+            ++text;
+        }
 }
 
 void Window::handleEvents() {
@@ -129,6 +155,12 @@ Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     assert(renderer);
+
+    SDL_Surface *charsetSurface = SDL_LoadBMP("charset.bmp");
+    assert(charsetSurface);
+    charset = SDL_CreateTextureFromSurface(renderer, charsetSurface);
+    assert(charset);
+    SDL_FreeSurface(charsetSurface);
 }
 
 Window::~Window() {
