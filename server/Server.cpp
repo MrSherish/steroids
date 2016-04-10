@@ -39,7 +39,7 @@ static Snake makeSnake(int playerId) {
     snake.dir = {1, 0};
 
     vec2 pos;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
         Snake::Segment seg{pos};
         snake.segments.push_front(seg);
         ++pos.x;
@@ -106,15 +106,20 @@ void Server::onDir(Packet p) {
     std::vector<int> vec = j["dir"];
     int x = vec[0];
     int y = vec[1];
+    if (x < -1) x = 1;
+    if (x > 1) x = 1;
+    if (y < -1) y = -1;
+    if (y > 1) y = 1;
     vec2 dir {x, y};
 
     if (playerId) {
         Snake & snake = getPlayerSnake(playerId);
-        snake.dir = dir;
+        if(snake.dir + dir != vec2{0, 0}) {
+            snake.dir = dir;
+        }
     } else {
         std::cerr << "No player for " << std::hex << p.ip << std::endl;
     }
-
 }
 
 void Server::snakeMoved(const Snake &s) {
@@ -248,12 +253,14 @@ void Server::handleSnakesCollision(Snake &a, Snake &b) {
         killSnake(a);
         killSnake(b);
     } else {
+        int i = 0;
         for (auto as : a_.segments) {
-            if (as.pos != ah_ && as.pos == bh_) {
+            if (i != 0 && as.pos == bh_) {
                 std::cerr << "Standard collision " << a.playerId << ":" << b.playerId << std::endl;
                 killSnake(b);
                 return;
             }
+            ++i;
         }
     }
 }
