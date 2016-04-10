@@ -38,12 +38,12 @@ private:
 
     void killSnake(Snake &snake);
 
-    void handleSnakesCollision(Snake &a, Snake &b);
+    void handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> & vector);
 
 public:
 
-    static const auto ARENA_WIDTH = 16; // segments
-    static const auto ARENA_HEIGHT = 16; // segments
+    static const auto ARENA_WIDTH = 17; // segments
+    static const auto ARENA_HEIGHT = 17; // segments
     static const int PORT = 28666;
 
     Server(Arena &world);

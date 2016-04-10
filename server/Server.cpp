@@ -199,12 +199,18 @@ void Server::moveSnakes() {
 }
 
 void Server::handleCollisions() {
+    std::vector<Snake*> snakesToKill;
+
     for (Snake &a : arena.snakes) {
         for (Snake &b : arena.snakes) {
             if (a.alive && b.alive) {
-                handleSnakesCollision(a, b);
+                handleSnakesCollision(a, b, snakesToKill);
             }
         }
+    }
+
+    for (Snake *s : snakesToKill) {
+        killSnake(*s);
     }
 }
 
@@ -223,7 +229,7 @@ void Server::killSnake(Snake &s) {
     broadcast(j);
 }
 
-void Server::handleSnakesCollision(Snake &a, Snake &b) {
+void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &snakesToKill) {
     Snake a_ = a;
     Snake b_ = b;
     a_.proceed(arena.width, arena.height);
@@ -236,28 +242,28 @@ void Server::handleSnakesCollision(Snake &a, Snake &b) {
     int bi = b.playerId;
 
     if (ai != bi && ah_ == bh_) {
-        int dx = std::abs(ah.x - bh.x);
-        int dy = std::abs(ah.y - bh.y);
+        int dx = std::min(std::abs(ah.x - bh.x), std::abs(ah.x - bh.x + arena.width));
+        int dy = std::min(std::abs(ah.y - bh.y), std::abs(ah.y - bh.y + arena.height));
         if (dx == 1 && dy == 1) {
             std::cerr << "Head-on collision type C " << a.playerId << ":" << b.playerId << std::endl;
-            killSnake(a);
-            killSnake(b);
+            snakesToKill.push_back(&a);
+            snakesToKill.push_back(&b);
         } else {
             std::cerr << "Head-on collision type A " << a.playerId << ":" << b.playerId << std::endl;
             a.proceed(arena.width, arena.height);
-            killSnake(a);
-            killSnake(b);
+            snakesToKill.push_back(&a);
+            snakesToKill.push_back(&b);
         }
     } else if(ah_ == bh && bh_ == ah) {
         std::cerr << "Head-on collision type B " << a.playerId << ":" << b.playerId << std::endl;
-        killSnake(a);
-        killSnake(b);
+        snakesToKill.push_back(&a);
+        snakesToKill.push_back(&b);
     } else {
         int i = 0;
         for (auto as : a_.segments) {
             if (i != 0 && as.pos == bh_) {
                 std::cerr << "Standard collision " << a.playerId << ":" << b.playerId << std::endl;
-                killSnake(b);
+                snakesToKill.push_back(&b);
                 return;
             }
             ++i;
