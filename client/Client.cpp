@@ -43,6 +43,15 @@ void Client::changeDir(vec2 dir) {
     });
 }
 
+std::vector<Client::Announcement> Client::checkAnnouncements() {
+    for (size_t i = 0; i < pendingAnnouncements.size(); i++) {
+        if (pendingAnnouncements.at(i).tick() == 0) {
+            pendingAnnouncements.erase(pendingAnnouncements.begin() + i);
+        }
+    }
+    return pendingAnnouncements;
+}
+
 static void moveSnake(Snake &snake) {
 
 }
@@ -82,6 +91,10 @@ void Client::onHello(json j) {
 
 void Client::onPlayerConnected(json j) {
     addPlayer(j);
+
+    std::string announceMessage = arena.players.back().nick + " connected to server.";
+    Announcement a(announceMessage, 100);
+    pendingAnnouncements.push_back(a);
 }
 
 static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec) {

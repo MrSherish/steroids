@@ -16,6 +16,7 @@ private:
     bool quit = false;
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
+    SDL_Texture* charset = nullptr;
 
     Arena arena;
     Client client;
@@ -24,6 +25,7 @@ private:
 
     void render();
 
+    void drawString(std::string str, int x, int y);
 public:
 
     Window(std::string serverHost);
