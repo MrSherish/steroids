@@ -8,6 +8,10 @@ struct vec2 {
 
     vec2(int x = 0, int y = 0) : x(x), y(y) {}
 
+    bool operator==(vec2 o);
+
+    bool operator!=(vec2 o);
+
     vec2 operator+(vec2 o);
 };
 

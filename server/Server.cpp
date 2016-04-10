@@ -3,7 +3,7 @@
 
 const int SERVER_TICKRATE = 128;
 const int SERVER_TICK_DELAY = 1000 / SERVER_TICKRATE;
-const int ARENA_TICKRATE = 8;
+const int ARENA_TICKRATE = 2;
 
 using nlohmann::json;
 
@@ -163,10 +163,9 @@ void Server::restart() {
 }
 
 void Server::tick() {
-    for (Snake &s : arena.snakes) {
-        s.proceed(arena.width, arena.height);
-        snakeMoved(s);
-    }
+    handleCollisions();
+    moveSnakes();
+    broadcastSnakeMoved();
 }
 
 void Server::run() {
@@ -181,7 +180,93 @@ void Server::run() {
             tick();
         }
 
-        SDL_Delay(SERVER_TICK_DELAY);
+        SDL_Delay((Uint32) SERVER_TICK_DELAY);
         ++ticks;
     }
 }
+
+void Server::moveSnakes() {
+    for (Snake &s : arena.snakes) {
+        if (s.alive) {
+            s.proceed(arena.width, arena.height);
+        }
+    }
+}
+
+void Server::handleCollisions() {
+    for (Snake &a : arena.snakes) {
+        for (Snake &b : arena.snakes) {
+            if (a.alive && b.alive) {
+                handleSnakesCollision(a, b);
+            }
+        }
+    }
+}
+
+void Server::broadcastSnakeMoved() {
+    for (Snake &s : arena.snakes) {
+        snakeMoved(s);
+    }
+}
+
+void Server::killSnake(Snake &s) {
+    s.alive = false;
+    json j = {
+            {"message", "snakeDied"},
+            {"playerId", s.playerId}
+    };
+    broadcast(j);
+}
+
+void Server::handleSnakesCollision(Snake &a, Snake &b) {
+    Snake a_ = a;
+    Snake b_ = b;
+    a_.proceed(arena.width, arena.height);
+    b_.proceed(arena.width, arena.height);
+    vec2 ah = a.segments.front().pos;
+    vec2 bh = b.segments.front().pos;
+    vec2 ah_ = a_.segments.front().pos;
+    vec2 bh_ = b_.segments.front().pos;
+    int ai = a.playerId;
+    int bi = b.playerId;
+
+    if (ai != bi && ah_ == bh_) {
+        int dx = std::abs(ah.x - bh.x);
+        int dy = std::abs(ah.y - bh.y);
+        if (dx == 1 && dy == 1) {
+            std::cerr << "Head-on collision type C " << a.playerId << ":" << b.playerId << std::endl;
+            killSnake(a);
+            killSnake(b);
+        } else {
+            std::cerr << "Head-on collision type A " << a.playerId << ":" << b.playerId << std::endl;
+            a.proceed(arena.width, arena.height);
+            killSnake(a);
+            killSnake(b);
+        }
+    } else if(ah_ == bh && bh_ == ah) {
+        std::cerr << "Head-on collision type B " << a.playerId << ":" << b.playerId << std::endl;
+        killSnake(a);
+        killSnake(b);
+    } else {
+        for (auto as : a_.segments) {
+            if (as.pos != ah_ && as.pos == bh_) {
+                std::cerr << "Standard collision " << a.playerId << ":" << b.playerId << std::endl;
+                killSnake(b);
+                return;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

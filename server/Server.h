@@ -28,6 +28,18 @@ private:
 
     Snake & getPlayerSnake(int playerId);
 
+    void onDir(Packet packet);
+
+    void moveSnakes();
+
+    void handleCollisions();
+
+    void broadcastSnakeMoved();
+
+    void killSnake(Snake &snake);
+
+    void handleSnakesCollision(Snake &a, Snake &b);
+
 public:
 
     static const auto ARENA_WIDTH = 16; // segments
@@ -41,8 +53,6 @@ public:
     void tick();
 
     void run();
-
-    void onDir(Packet packet);
 };
 
 

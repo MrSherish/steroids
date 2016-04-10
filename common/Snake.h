@@ -20,6 +20,7 @@ struct Snake {
     std::deque<Segment> segments;
     vec2 dir;
     Color color;
+    bool alive = true;
 
     Snake(vec2 pos, vec2 dir, Color color);
 
