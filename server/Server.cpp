@@ -39,7 +39,7 @@ static Snake makeSnake(int playerId) {
     snake.dir = {1, 0};
 
     vec2 pos;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
         Snake::Segment seg{pos};
         snake.segments.push_front(seg);
         ++pos.x;
@@ -106,15 +106,20 @@ void Server::onDir(Packet p) {
     std::vector<int> vec = j["dir"];
     int x = vec[0];
     int y = vec[1];
+    if (x < -1) x = 1;
+    if (x > 1) x = 1;
+    if (y < -1) y = -1;
+    if (y > 1) y = 1;
     vec2 dir {x, y};
 
     if (playerId) {
         Snake & snake = getPlayerSnake(playerId);
-        snake.dir = dir;
+        if(snake.dir + dir != vec2{0, 0}) {
+            snake.dir = dir;
+        }
     } else {
         std::cerr << "No player for " << std::hex << p.ip << std::endl;
     }
-
 }
 
 void Server::snakeMoved(const Snake &s) {
@@ -163,6 +168,7 @@ void Server::restart() {
 }
 
 void Server::tick() {
+    handleFruits();
     handleCollisions();
     moveSnakes();
     broadcastSnakeMoved();
@@ -194,12 +200,18 @@ void Server::moveSnakes() {
 }
 
 void Server::handleCollisions() {
+    std::vector<Snake*> snakesToKill;
+
     for (Snake &a : arena.snakes) {
         for (Snake &b : arena.snakes) {
             if (a.alive && b.alive) {
-                handleSnakesCollision(a, b);
+                handleSnakesCollision(a, b, snakesToKill);
             }
         }
+    }
+
+    for (Snake *s : snakesToKill) {
+        killSnake(*s);
     }
 }
 
@@ -218,7 +230,7 @@ void Server::killSnake(Snake &s) {
     broadcast(j);
 }
 
-void Server::handleSnakesCollision(Snake &a, Snake &b) {
+void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &snakesToKill) {
     Snake a_ = a;
     Snake b_ = b;
     a_.proceed(arena.width, arena.height);
@@ -231,36 +243,56 @@ void Server::handleSnakesCollision(Snake &a, Snake &b) {
     int bi = b.playerId;
 
     if (ai != bi && ah_ == bh_) {
-        int dx = std::abs(ah.x - bh.x);
-        int dy = std::abs(ah.y - bh.y);
+        int dx = std::min(std::abs(ah.x - bh.x), std::abs(ah.x - bh.x + arena.width));
+        int dy = std::min(std::abs(ah.y - bh.y), std::abs(ah.y - bh.y + arena.height));
         if (dx == 1 && dy == 1) {
             std::cerr << "Head-on collision type C " << a.playerId << ":" << b.playerId << std::endl;
-            killSnake(a);
-            killSnake(b);
+            snakesToKill.push_back(&a);
+            snakesToKill.push_back(&b);
         } else {
             std::cerr << "Head-on collision type A " << a.playerId << ":" << b.playerId << std::endl;
             a.proceed(arena.width, arena.height);
-            killSnake(a);
-            killSnake(b);
+            snakesToKill.push_back(&a);
+            snakesToKill.push_back(&b);
         }
-    } else if(ah_ == bh && bh_ == ah) {
+    } else if(ah_ == bh && bh_ == ah && ai != bi) {
         std::cerr << "Head-on collision type B " << a.playerId << ":" << b.playerId << std::endl;
-        killSnake(a);
-        killSnake(b);
+        snakesToKill.push_back(&a);
+        snakesToKill.push_back(&b);
     } else {
+        int i = 0;
         for (auto as : a_.segments) {
-            if (as.pos != ah_ && as.pos == bh_) {
+            if (i != 0 && as.pos == bh_) {
                 std::cerr << "Standard collision " << a.playerId << ":" << b.playerId << std::endl;
-                killSnake(b);
+                snakesToKill.push_back(&b);
                 return;
             }
+            ++i;
         }
     }
 }
 
+void Server::handleFruits() {
+    std::vector<int> fruitsToRemove;
 
+    for (Snake &s : arena.snakes) {
+        for (int i = 0; i < arena.fruits.size(); i++) {
+            Fruit &f = arena.fruits.at(i);
+            if (s.segments.front().pos == f.pos) {
+                handleEating(s, f);
+                fruitsToRemove.push_back(i);
+            }
+        }
+    }
 
+    for (int i = fruitsToRemove.size() - 1; i >= 0; i--) {
+        arena.fruits.erase(arena.fruits.begin() + fruitsToRemove.at(i));
+    }
+}
 
+void Server::handleEating(Snake &s, Fruit &f) {
+    //TODO
+}
 
 
 
