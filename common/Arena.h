@@ -14,7 +14,9 @@ struct Arena {
     std::vector<Fruit> fruits;
 
     Arena(int width = 0, int height = 0) : width(width), height(height) {}
-    void fruitsOfLabor();
+    void createFruitsOnArena();
+    void spawnNewFruit();
+    bool canPlaceFruit(vec2 pos);
 };
 
 

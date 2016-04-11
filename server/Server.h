@@ -34,6 +34,10 @@ private:
 
     void handleCollisions();
 
+    void handleFruits();
+
+    void handleEating(Snake &snake, Fruit &fruit);
+
     void broadcastSnakeMoved();
 
     void killSnake(Snake &snake);
