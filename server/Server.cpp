@@ -211,7 +211,7 @@ void Server::handleFruits() {
 }
 
 void Server::handleEating(Snake &s, Fruit &f) {
-    //TODO
+    s.segments.front().fat = true;
 }
 
 void Server::broadcast(nlohmann::json j) {
