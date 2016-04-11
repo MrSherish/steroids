@@ -1,7 +1,6 @@
 #include "Arena.h"
 #include <random>
 
-const int STARTING_NUMBER_OF_FRUITS = 17;
 
 void Arena::createFruitsOnArena() {
     for (int i = 0; i < STARTING_NUMBER_OF_FRUITS; i++) {

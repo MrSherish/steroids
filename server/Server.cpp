@@ -93,10 +93,18 @@ void Server::restart() {
     arena.createFruitsOnArena();
 }
 
+void Server::spawnFruit() {
+    //TODO: spawnFruit should spawn fruits randomly
+    while (arena.fruits.size() < STARTING_NUMBER_OF_FRUITS){
+        arena.spawnNewFruit();
+    }
+}
+
 void Server::tick() {
-    handleFruits();
     handleCollisions();
     moveSnakes();
+    handleFruits();
+    spawnFruit();
     broadcastSnakeMoved();
     sendFruits();
 }
@@ -191,20 +199,14 @@ void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &sna
 }
 
 void Server::handleFruits() {
-    std::vector<int> fruitsToRemove;
-
     for (Snake &s : arena.snakes) {
-        for (int i = 0; i < arena.fruits.size(); i++) {
-            Fruit &f = arena.fruits.at(i);
-            if (s.segments.front().pos == f.pos) {
-                handleEating(s, f);
-                fruitsToRemove.push_back(i);
+        for (auto f = arena.fruits.begin(); f < arena.fruits.end();) {
+            if (s.segments.front().pos == f->pos) {
+                handleEating(s, *f);
+                f = arena.fruits.erase(f);
             }
+            else f++;
         }
-    }
-
-    for (int i = fruitsToRemove.size() - 1; i >= 0; i--) {
-        arena.fruits.erase(arena.fruits.begin() + fruitsToRemove.at(i));
     }
 }
 

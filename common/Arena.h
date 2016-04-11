@@ -6,7 +6,9 @@
 #include "Player.h"
 #include "Fruit.h"
 
-struct Arena {
+const int STARTING_NUMBER_OF_FRUITS = 17;
+
+struct Arena {  
     int width = 0;
     int height = 0;
     std::vector<Snake> snakes;
