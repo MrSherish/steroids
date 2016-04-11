@@ -27,6 +27,8 @@ private:
     void onHello(json json);
 
     void addPlayer(json j);
+    
+    void addFruit(json j);
 
 public:
 

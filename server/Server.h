@@ -19,6 +19,8 @@ private:
     void broadcast(nlohmann::json j);
 
     void onConnect(Packet p);
+    
+    void sendFruits();
 
     void snakeMoved(const Snake &s);
 
@@ -43,6 +45,8 @@ private:
     void killSnake(Snake &snake);
 
     void handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> & vector);
+    
+    void spawnFruit();
 
 public:
 

@@ -30,6 +30,10 @@ void Client::addPlayer(json j) {
     addPlayer(playerId, nick, color);
 }
 
+void Client::addFruit(json j) {
+    Fruit newFruit = Fruit(j["type"], vec2(j["posX"], j["posY"]));
+    arena.fruits.push_back(newFruit);
+}
 
 void Client::changeDir(vec2 dir) {
     std::vector<int> vec {dir.x, dir.y};
@@ -58,6 +62,12 @@ void Client::receiveMessages() {
             onPlayerConnected(j);
         } else if (message == "snakeMoved") {
             onSnakeMoved(j);
+        } else if (message == "fruits") {
+            arena.fruits.clear();
+            std::vector<json> fruits = j["fruits"];
+            for (auto &f :fruits){
+                addFruit(f);
+            }
         }
     }
 }
