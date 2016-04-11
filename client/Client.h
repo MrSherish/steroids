@@ -13,6 +13,7 @@ private:
     std::string serverHost;
     Arena &arena;
     int myPlayerId = 0;
+	int points = 0;
 
     void addPlayer(int playerId, std::string nick, Color color);
 
@@ -35,7 +36,6 @@ public:
     Client(Arena &world, std::string serverHost, std::string nick);
 
     void receiveMessages();
-
     void changeDir(vec2 dir);
 
 };
