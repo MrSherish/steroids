@@ -168,6 +168,7 @@ void Server::restart() {
 }
 
 void Server::tick() {
+    handleFruits();
     handleCollisions();
     moveSnakes();
     broadcastSnakeMoved();
@@ -271,9 +272,27 @@ void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &sna
     }
 }
 
+void Server::handleFruits() {
+    std::vector<int> fruitsToRemove;
 
+    for (Snake &s : arena.snakes) {
+        for (int i = 0; i < arena.fruits.size(); i++) {
+            Fruit &f = arena.fruits.at(i);
+            if (s.segments.front().pos == f.pos) {
+                handleEating(s, f);
+                fruitsToRemove.push_back(i);
+            }
+        }
+    }
 
+    for (int i = fruitsToRemove.size() - 1; i >= 0; i--) {
+        arena.fruits.erase(arena.fruits.begin() + fruitsToRemove.at(i));
+    }
+}
 
+void Server::handleEating(Snake &s, Fruit &f) {
+    //TODO
+}
 
 
 

@@ -37,6 +37,28 @@ void Window::render() {
         }
     }
 
+
+    for (Fruit f : arena.fruits) {
+        SDL_SetRenderDrawColor(renderer, 75, 75, 75, 0);
+
+        SDL_Rect r;
+        r.x = f.pos.x * SEGMENT_WIDTH;
+        r.y = f.pos.y * SEGMENT_HEIGHT;
+        r.w = SEGMENT_WIDTH;
+        r.h = SEGMENT_HEIGHT;
+
+        SDL_RenderFillRect(renderer, &r);
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
+        r.x = f.pos.x * SEGMENT_WIDTH + SEGMENT_WIDTH/3;
+        r.y = f.pos.y * SEGMENT_HEIGHT + SEGMENT_HEIGHT/3;
+        r.w = SEGMENT_WIDTH/3;
+        r.h = SEGMENT_HEIGHT/3;
+
+        SDL_RenderFillRect(renderer, &r);
+    }
+
     SDL_RenderPresent(renderer);
 }
 
