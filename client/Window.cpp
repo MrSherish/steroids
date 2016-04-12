@@ -95,6 +95,7 @@ void Window::handleEvents() {
                         client.changeDir({0, 1});
                         break;
                     case SDLK_SPACE:
+                        client.changeDir({0, 0});
                         break;
                     default:
                         break;

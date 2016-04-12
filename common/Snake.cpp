@@ -14,11 +14,13 @@ void Snake::proceed(int arenaWidth, int arenaHeight) {
     fpos.x = fpos.x % arenaWidth;
     fpos.y = fpos.y % arenaHeight;
 
-    segments.push_front(Segment{fpos, false});
+    if (dir != vec2{0, 0}) {
+        segments.push_front(Segment{fpos, false});
 
-    if (bs.fat) {
-        bs.fat = false;
-    } else {
-        segments.pop_back();
+        if (bs.fat) {
+            bs.fat = false;
+        } else {
+            segments.pop_back();
+        }
     }
 }
