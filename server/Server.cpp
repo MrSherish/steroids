@@ -149,7 +149,7 @@ void Server::run() {
         tick();
 
         int sleepTime = nextTickStart - SDL_GetTicks();
-        std::cerr << "Scheduled sleep time: " << sleepTime << std::endl;
+        std::cerr << "Scheduled sleep time: " << sleepTime << " (" << arena.snakes.size() << " snakes)" << std::endl;
         SDL_Delay((Uint32) std::max(0, sleepTime));
         ++ticks;
     }
