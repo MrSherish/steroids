@@ -1,7 +1,5 @@
 #include "Client.h"
 
-const auto SERVER_HOST = "localhost";
-
 using nlohmann::json;
 
 void Client::sendMessage(json j) {
@@ -41,10 +39,6 @@ void Client::changeDir(vec2 dir) {
             {"message", "dir"},
             {"dir", vec}
     });
-}
-
-static void moveSnake(Snake &snake) {
-
 }
 
 void Client::receiveMessages() {
