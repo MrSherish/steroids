@@ -2,8 +2,9 @@
 #include "Server.h"
 
 const int SERVER_TICKRATE = 128;
-const int SERVER_TICK_DELAY = 1000 / SERVER_TICKRATE;
-const int ARENA_TICKRATE = 2;
+const int SERVER_TICK_INTERVAL = 1000 / SERVER_TICKRATE;
+const int ARENA_TICKRATE = 8;
+const int ARENA_TICK_INTERVAL = 1000 / ARENA_TICKRATE;
 const int TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
@@ -131,7 +132,6 @@ void Server::spawnFruit() {
 
 void Server::tick() {
     handleCollisions();
-
     moveSnakes();
     handleFruits();
     spawnFruit();
@@ -144,12 +144,13 @@ void Server::run() {
     int ticks = 0;
     while (ticks != INT_MAX) {
         receiveMessages();
+        int nextTickStart = SDL_GetTicks() + ARENA_TICK_INTERVAL;
 
-        if(ticks % (SERVER_TICKRATE / ARENA_TICKRATE) == 0) {
-            tick();
-        }
+        tick();
 
-        SDL_Delay((Uint32) SERVER_TICK_DELAY);
+        int sleepTime = nextTickStart - SDL_GetTicks();
+        std::cerr << "Scheduled sleep time: " << sleepTime << std::endl;
+        SDL_Delay((Uint32) std::max(0, sleepTime));
         ++ticks;
     }
 }
