@@ -13,7 +13,6 @@ const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
 
 
 
-const auto NICK = "player0";
 
 void Window::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -150,7 +149,7 @@ void Window::handleEvents() {
     }
 }
 
-Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
+Window::Window(std::string serverHost, std::string nickname) : client(arena, serverHost, nickname) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
 
     window = SDL_CreateWindow(
