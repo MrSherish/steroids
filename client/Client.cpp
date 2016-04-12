@@ -118,21 +118,12 @@ static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec
     return segments;
 }
 
-Client::Client(
-        Arena &world,
-        std::string serverHost,
-        std::string nick
-) : socket(Socket::ANY_PORT), serverHost(serverHost), arena(world) {
-    uint8_t r = (uint8_t) rand();
-    uint8_t g = (uint8_t) rand();
-    uint8_t b = (uint8_t) rand();
-
-    std::vector<int> vec {r, g, b};
-
+Client::Client(Arena &world, std::string serverHost, std::string nick, Color color)
+        : socket(Socket::ANY_PORT), serverHost(serverHost), arena(world) {
     sendMessage({
             {"message", "connect"},
             {"nick", nick},
-            {"color", vec}
+            {"color", color.toJson()}
     });
 }
 

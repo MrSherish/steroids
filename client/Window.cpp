@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "../server/Server.h"
-
+#include "../common/Config.h"
 const auto TITLE = "Snake";
 const auto CHARSET_FILE = "charset_black.bmp";
 const auto FRUIT_FILE_START = "fruit";
@@ -217,7 +217,7 @@ void Window::handleEvents() {
     }
 }
 
-Window::Window(std::string serverHost, std::string nickname) : client(arena, serverHost, nickname) {
+Window::Window(std::string serverHost, Config & cfg) : client(arena, serverHost, cfg.nick, cfg.color) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
 
     window = SDL_CreateWindow(

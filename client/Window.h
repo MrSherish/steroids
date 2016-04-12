@@ -6,10 +6,10 @@
 #include <cassert>
 #include <zconf.h>
 
-#include "Client.h"
+#include "../common/Config.h"
 #include "../common/Arena.h"
 #include "../server/Server.h"
-
+#include "Client.h"
 
 const auto NICK = "player0";
 
@@ -41,7 +41,7 @@ private:
     SDL_Texture* loadTexture(const char *file);
 public:
 
-    Window(std::string serverHost, std::string nickname = NICK);
+    Window(std::string serverHost, Config & cfg);
 
     ~Window();
 

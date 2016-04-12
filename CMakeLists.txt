@@ -26,7 +26,9 @@ set(COMMON_SOURCES
         common/Player.h
         common/Player.cpp
         common/Fruit.h
-        common/Fruit.cpp)
+        common/Fruit.cpp
+        common/Config.h
+        common/Config.cpp)
 
 set(SERVER_SOURCES
         ${COMMON_SOURCES}
@@ -40,7 +42,9 @@ set(CLIENT_SOURCES
         client/Window.h
         client/Window.cpp
         client/Client.h
-        client/Client.cpp)
+        client/Client.cpp
+        client/Dialog.h
+        client/Dialog.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 

@@ -1,7 +1,6 @@
 #ifndef STEROIDS_DIALOG_H
 #define STEROIDS_DIALOG_H
 
-
 #include <string>
 #include <SDL.h>
 

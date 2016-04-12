@@ -45,10 +45,10 @@ private:
     void makeSnakeDying(int playerID);
 
 public:
-    Client(Arena &world, std::string serverHost, std::string nick);
+
+    Client(Arena &world, std::string serverHost, std::string nick, Color color);
 
     void receiveMessages();
-
     void changeDir(vec2 dir);
 
     void onSnapshot(json j);
