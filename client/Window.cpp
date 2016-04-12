@@ -13,8 +13,7 @@ const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
 const int CLIENT_TICKRATE = 128;
 const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
 const int SEGMENT_BORDER = 2;
-
-
+int const DEATH_BLINK_RATE = CLIENT_TICK_DELAY*100;
 
 void Window::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -33,40 +32,82 @@ void Window::drawSnakes() {
 
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
         if (s.segments.size() == 0) continue;
+        
         for (auto it = s.segments.begin(); it < s.segments.end()-1;it++) {
-            auto next = it + 1;
-            int sx = (*it).pos.x;
-            int sy = (*it).pos.y;
-            int nx = (*next).pos.x;
-            int ny = (*next).pos.y;
-
-            SDL_Rect r;
-
-            if ((ny == 0 && sy == (Server::ARENA_HEIGHT - 1)) || (ny == (Server::ARENA_HEIGHT - 1) && sy == 0)) {
-                r.x = sx * SEGMENT_WIDTH + SEGMENT_BORDER;
-                r.y = 0;
-                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
-                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
-                SDL_RenderFillRect(renderer, &r);
-                r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
-                SDL_RenderFillRect(renderer, &r);
+            if (s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2)){
+                auto next = it + 1;
+                int sx = (*it).pos.x;
+                int sy = (*it).pos.y;
+                int nx = (*next).pos.x;
+                int ny = (*next).pos.y;
+                
+                SDL_Rect r;
+                
+                if ((ny == 0 && sy == (Server::ARENA_HEIGHT - 1)) || (ny == (Server::ARENA_HEIGHT - 1) && sy == 0)) {
+                    r.x = sx * SEGMENT_WIDTH + SEGMENT_BORDER;
+                    r.y = 0;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
+                    SDL_RenderFillRect(renderer, &r);
+                    r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
+                    SDL_RenderFillRect(renderer, &r);
+                }
+                else if ((nx == 0 && sx == (Server::ARENA_WIDTH - 1)) || (nx == (Server::ARENA_WIDTH - 1) && sx == 0)) {
+                    r.y = sy * SEGMENT_HEIGHT + SEGMENT_BORDER;
+                    r.x = 0;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
+                    SDL_RenderFillRect(renderer, &r);
+                    r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
+                    SDL_RenderFillRect(renderer, &r);
+                }
+                else {
+                    r.x = ((sx<nx) ? sx : nx) * SEGMENT_WIDTH + SEGMENT_BORDER;
+                    r.y = ((sy<ny) ? sy : ny) * SEGMENT_HEIGHT + SEGMENT_BORDER;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
+                    
+                    SDL_RenderFillRect(renderer, &r);
+                }
             }
-            else if ((nx == 0 && sx == (Server::ARENA_WIDTH - 1)) || (nx == (Server::ARENA_WIDTH - 1) && sx == 0)) {
-                r.y = sy * SEGMENT_HEIGHT + SEGMENT_BORDER;
-                r.x = 0;
-                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
-                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
-                SDL_RenderFillRect(renderer, &r);
-                r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
-                SDL_RenderFillRect(renderer, &r);
-            }
-            else {
-                r.x = ((sx<nx) ? sx : nx) * SEGMENT_WIDTH + SEGMENT_BORDER;
-                r.y = ((sy<ny) ? sy : ny) * SEGMENT_HEIGHT + SEGMENT_BORDER;
-                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
-                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
-
-                SDL_RenderFillRect(renderer, &r);
+        }
+        
+        for (auto it = s.segments.begin(); it < s.segments.end()-1;it++) {
+            if (s.alive){
+                auto next = it + 1;
+                int sx = (*it).pos.x;
+                int sy = (*it).pos.y;
+                int nx = (*next).pos.x;
+                int ny = (*next).pos.y;
+                
+                SDL_Rect r;
+                
+                if ((ny == 0 && sy == (Server::ARENA_HEIGHT - 1)) || (ny == (Server::ARENA_HEIGHT - 1) && sy == 0)) {
+                    r.x = sx * SEGMENT_WIDTH + SEGMENT_BORDER;
+                    r.y = 0;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
+                    SDL_RenderFillRect(renderer, &r);
+                    r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
+                    SDL_RenderFillRect(renderer, &r);
+                }
+                else if ((nx == 0 && sx == (Server::ARENA_WIDTH - 1)) || (nx == (Server::ARENA_WIDTH - 1) && sx == 0)) {
+                    r.y = sy * SEGMENT_HEIGHT + SEGMENT_BORDER;
+                    r.x = 0;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
+                    SDL_RenderFillRect(renderer, &r);
+                    r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
+                    SDL_RenderFillRect(renderer, &r);
+                }
+                else {
+                    r.x = ((sx<nx) ? sx : nx) * SEGMENT_WIDTH + SEGMENT_BORDER;
+                    r.y = ((sy<ny) ? sy : ny) * SEGMENT_HEIGHT + SEGMENT_BORDER;
+                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
+                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
+                    
+                    SDL_RenderFillRect(renderer, &r);
+                }
             }
         }
     }
@@ -220,6 +261,7 @@ void Window::enterEventLoop() {
     {
         handleEvents();
         client.receiveMessages();
+        client.removeSnakes();
         render();
         SDL_Delay(CLIENT_TICK_DELAY);
     }

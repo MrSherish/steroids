@@ -4,6 +4,7 @@
 const int SERVER_TICKRATE = 128;
 const int SERVER_TICK_DELAY = 1000 / SERVER_TICKRATE;
 const int ARENA_TICKRATE = 2;
+const int TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
 
@@ -237,6 +238,8 @@ void Server::broadcast(nlohmann::json j) {
 
 void Server::killSnake(Snake &s) {
     s.alive = false;
+    s.isDying = true;
+    s.deathTick = SDL_GetTicks();
     json j = {
         {"message", "snakeDied"},
         {"playerId", s.playerId}

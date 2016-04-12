@@ -36,7 +36,8 @@ nlohmann::json Snake::toJson() const {
     return {
             {"playerId", playerId},
             {"color", color.toJson()},
-            {"segments", segs}
+            {"segments", segs},
+            {"isAlive", alive}
     };
 }
 
@@ -51,6 +52,7 @@ Snake Snake::fromJson(nlohmann::json j) {
         segs.push_back(seg);
     }
     snake.segments = segs;
+    snake.alive = j["isAlive"];
 
     return snake;
 }

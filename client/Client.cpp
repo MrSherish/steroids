@@ -1,6 +1,6 @@
 #include "Client.h"
 
-const auto SERVER_HOST = "localhost";
+int const TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
 
@@ -20,8 +20,6 @@ void Client::addPlayer(int playerId, std::string nick, Color color) {
 
     addSnake(playerId, color);
 }
-
-
 
 void Client::addPlayer(json j) {
     int playerId = j["playerId"];
@@ -52,10 +50,6 @@ std::vector<Client::Announcement> Client::checkAnnouncements() {
     return pendingAnnouncements;
 }
 
-static void moveSnake(Snake &snake) {
-
-}
-
 void Client::receiveMessages() {
     Packet p;
     while (socket.receive(p)) {
@@ -71,6 +65,27 @@ void Client::receiveMessages() {
             onPlayerConnected(j);
         } else if (message == "snapshot") {
             onSnapshot(j);
+        } else if (message == "snakeDied"){
+            int playerID = j["playerId"];
+            makeSnakeDying(playerID);
+        }
+    }
+}
+
+void Client::makeSnakeDying(int playerID){
+    for (Snake &s : arena.snakes){
+        if (s.playerId == playerID){
+            s.isDying = true;
+            s.deathTick = SDL_GetTicks();
+            break;
+        }
+    }
+}
+
+void Client::removeSnakes(){
+    for (auto s = arena.snakes.begin(); s < arena.snakes.end(); s++){
+        if (s->isDying && SDL_GetTicks() - s->deathTick >= TICKS_AFTER_SNAKE_GETS_REMOVED){
+            s->isDying = false;
         }
     }
 }
@@ -137,6 +152,15 @@ void Client::onSnapshot(json j) {
     std::vector<Snake> snakes;
     for (const json &sj : j["snakes"]) {
         snakes.push_back(Snake::fromJson(sj));
+    }
+    
+    for (Snake &newSnake : snakes){
+        for (Snake &s : arena.snakes){
+            if (newSnake.playerId == s.playerId){
+                newSnake.isDying = s.isDying;
+                newSnake.deathTick = s.deathTick;
+            }
+        }
     }
 
     std::vector<Fruit> fruits;

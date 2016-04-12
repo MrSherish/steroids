@@ -41,6 +41,8 @@ private:
     void addPlayer(json j);
     
     void addFruit(json j);
+    
+    void makeSnakeDying(int playerID);
 
 public:
     Client(Arena &world, std::string serverHost, std::string nick);
@@ -50,6 +52,8 @@ public:
     void changeDir(vec2 dir);
 
     void onSnapshot(json j);
+    
+    void removeSnakes();
 	
     std::vector<Announcement> checkAnnouncements();
 	
