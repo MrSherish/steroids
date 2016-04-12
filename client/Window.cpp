@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "../server/Server.h"
-
+#include "../common/config.h"
 const auto TITLE = "Snake";
 
 const auto SEGMENT_WIDTH = 32; // px
@@ -112,7 +112,7 @@ void Window::handleEvents() {
     }
 }
 
-Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
+Window::Window(std::string serverHost,config & playerConfig) : client(arena, serverHost, NICK) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
 
     window = SDL_CreateWindow(

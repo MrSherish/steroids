@@ -9,6 +9,7 @@
 #include "Client.h"
 #include "../common/Arena.h"
 #include "../server/Server.h"
+#include "../common/config.h"
 
 class Window {
 private:
@@ -26,7 +27,7 @@ private:
 
 public:
 
-    Window(std::string serverHost);
+    Window(std::string serverHost,config & playerConfig);
 
     ~Window();
 
