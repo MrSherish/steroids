@@ -7,13 +7,25 @@
 #include "../server/Server.h"
 
 class Client {
+public:
+    class Announcement {
+    private:
+        int ticksRemaining;
+        std::string message;
+    public:
+        Announcement(std::string m, int l) {
+            this->message = m;
+            this->ticksRemaining = l;
+        }
+        std::string getMessage() { return message; }
+        int tick() { return ticksRemaining--; }
+    };
 private:
 
     Socket socket;
     std::string serverHost;
     Arena &arena;
     int myPlayerId = 0;
-    class Announcement;//prototype
     std::vector<Announcement> pendingAnnouncements;
 
     void addPlayer(int playerId, std::string nick, Color color);
@@ -31,20 +43,6 @@ private:
     void addFruit(json j);
 
 public:
-
-    class Announcement {
-    private:
-        int ticksRemaining;
-        std::string message;
-    public:
-        Announcement(std::string m, int l) {
-            this->message = m;
-            this->ticksRemaining = l;
-        }
-        std::string getMessage() { return message; }
-        int tick() { return ticksRemaining--; }
-    };
-
     Client(Arena &world, std::string serverHost, std::string nick);
 
     void receiveMessages();
