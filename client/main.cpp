@@ -12,6 +12,9 @@ int main (int argc, char** argv)
     net::init();
 
     std::string serverHost = "localhost";
+    if(argc >= 2) {
+        serverHost = argv[1];
+    }
 
     Config cfg = loadConfig();
     Window window(serverHost, cfg);
