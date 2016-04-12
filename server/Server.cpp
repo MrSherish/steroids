@@ -127,7 +127,7 @@ void Server::tick() {
     moveSnakes();
     handleFruits();
     spawnFruit();
-    sendFruits();
+    broadcastSnapshot();
 }
 
 void Server::run() {
@@ -136,7 +136,6 @@ void Server::run() {
     int ticks = 0;
     while (ticks != INT_MAX) {
         receiveMessages();
-        broadcastSnapshot();
 
         if(ticks % (SERVER_TICKRATE / ARENA_TICKRATE) == 0) {
             tick();
@@ -234,23 +233,6 @@ void Server::broadcast(nlohmann::json j) {
         Packet p { player.ip, player.port, j };
         socket.send(p);
     }
-}
-
-void Server::sendFruits() {
-    std::vector<json> fruits;
-    for (Fruit f : arena.fruits){
-        json j = {
-            {"type", f.type},
-            {"posX", f.pos.x},
-            {"posY", f.pos.y}
-        };
-        fruits.push_back(j);
-    }
-    json j = {
-        {"message", "fruits"},
-        {"fruits", fruits}
-    };
-    broadcast(j);
 }
 
 void Server::killSnake(Snake &s) {
