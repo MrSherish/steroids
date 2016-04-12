@@ -36,6 +36,8 @@ private:
 
     void moveSnakes();
 
+	Player & getPlayerByID(int playerId);
+
     void handleCollisions();
 
     void handleFruits();

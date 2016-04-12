@@ -92,7 +92,13 @@ void Server::restart() {
     arena = Arena{ARENA_WIDTH, ARENA_HEIGHT};
     arena.createFruitsOnArena();
 }
-
+Player & Server::getPlayerByID(int PlayerID) {
+	auto it = std::find_if(arena.players.begin(), arena.players.end(), [=](Player & player) {
+	   return player.playerId == PlayerID;
+    });
+	assert(it != arena.players.end());
+	return *it;
+}
 void Server::spawnFruit() {
     //TODO: spawnFruit should spawn fruits randomly
     while (arena.fruits.size() < STARTING_NUMBER_OF_FRUITS){
@@ -102,6 +108,7 @@ void Server::spawnFruit() {
 
 void Server::tick() {
     handleCollisions();
+
     moveSnakes();
     handleFruits();
     spawnFruit();
@@ -211,9 +218,8 @@ void Server::handleFruits() {
 }
 /*Add point amount corresponding to fruit type to player, who owns
 the snake playerID to be replaced by player's nick*/
-void Server::addPoints(const Fruit&f, const Snake&s){
-	assert(s.playerId <= arena.players.size());
-	Player* scorer = &arena.players[s.playerId - 1];
+void Server::addPoints(const Fruit &f, const Snake &s){
+	Player* scorer = &getPlayerByID(s.playerId);
 	scorer->points += f.type;
 	std::cerr << scorer->nick << ":" << scorer->points<<std::endl;
 }
