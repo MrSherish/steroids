@@ -19,8 +19,6 @@ private:
     void broadcast(nlohmann::json j);
 
     void onConnect(Packet p);
-	
-    void sendFruits();
 
     void broadcastSnapshot();
 
