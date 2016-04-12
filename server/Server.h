@@ -47,8 +47,6 @@ private:
     void handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> & vector);
     
     void spawnFruit();
-    
-    void removeSnakes();
 
 public:
 

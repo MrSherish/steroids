@@ -18,7 +18,7 @@ void Window::render() {
     SDL_RenderClear(renderer);    
     
     for (const Snake &s : arena.snakes){
-        if (s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2)){
+        if (s.alive && s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2)){
             Color c = s.color;
             
             SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
@@ -39,7 +39,7 @@ void Window::render() {
     }
     
     for (const Snake &s : arena.snakes) {
-        if (!s.isDying){
+        if (s.alive && !s.isDying){
             Color c = s.color;
             
             SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);

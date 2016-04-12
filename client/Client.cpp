@@ -12,20 +12,20 @@ void Client::sendMessage(json j) {
     socket.send(p);
 }
 
-void Client::addPlayer(int playerId, std::string nick, Color color) {
+void Client::addPlayer(int playerId, std::string nick, Color color, bool isAlive) {
     Player player;
     player.playerId = playerId;
     player.nick = nick;
     arena.players.push_back(player);
-
-    addSnake(playerId, color);
+    addSnake(playerId, color, isAlive);
 }
 
 void Client::addPlayer(json j) {
     int playerId = j["playerId"];
     std::string nick = j["nick"];
     Color color = Color::fromJson(j["color"]);
-    addPlayer(playerId, nick, color);
+    bool isAlive = j["isAlive"];
+    addPlayer(playerId, nick, color, isAlive);
 }
 
 void Client::addFruit(json j) {
@@ -80,11 +80,10 @@ void Client::makeSnakeDying(int playerID){
 }
 
 void Client::removeSnakes(){
-    for (auto s = arena.snakes.begin(); s < arena.snakes.end();){
+    for (auto s = arena.snakes.begin(); s < arena.snakes.end(); s++){
         if (s->isDying && SDL_GetTicks() - s->deathTick >= TICKS_AFTER_SNAKE_GETS_REMOVED){
-            s = arena.snakes.erase(s);
+            s->alive = false;
         }
-        else s++;
     }
 }
 
@@ -146,10 +145,11 @@ Client::Client(
     });
 }
 
-void Client::addSnake(int playerId, Color color) {
+void Client::addSnake(int playerId, Color color, bool isAlive) {
     Snake snake;
     snake.playerId = playerId;
     snake.color = color;
+    snake.alive = isAlive;
     arena.snakes.push_back(snake);
 }
 

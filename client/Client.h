@@ -14,9 +14,9 @@ private:
     Arena &arena;
     int myPlayerId = 0;
 
-    void addPlayer(int playerId, std::string nick, Color color);
+    void addPlayer(int playerId, std::string nick, Color color, bool isAlive);
 
-    void addSnake(int playerId, Color color);
+    void addSnake(int playerId, Color color, bool isAlive);
 
     void onPlayerConnected(json j);
 
