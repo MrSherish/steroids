@@ -1,5 +1,7 @@
 #include "Snake.h"
 
+using nlohmann::json;
+
 Snake::Snake(vec2 pos, vec2 dir, Color color) : dir(dir), color(color) {
     segments.push_back(Segment{pos, false});
 }
@@ -23,4 +25,32 @@ void Snake::proceed(int arenaWidth, int arenaHeight) {
             segments.pop_back();
         }
     }
+}
+
+nlohmann::json Snake::toJson() const {
+    std::vector<json> segs;
+    for (auto seg : segments) {
+        segs.push_back(seg.pos.toJson());
+    }
+
+    return {
+            {"playerId", playerId},
+            {"color", color.toJson()},
+            {"segments", segs}
+    };
+}
+
+Snake Snake::fromJson(nlohmann::json j) {
+    Snake snake;
+    snake.playerId = j["playerId"];
+    snake.color = Color::fromJson(j["color"]);
+
+    std::deque<Segment> segs;
+    for (json sj : j["segments"]) {
+        Segment seg {vec2::fromJson(sj)};
+        segs.push_back(seg);
+    }
+    snake.segments = segs;
+
+    return snake;
 }

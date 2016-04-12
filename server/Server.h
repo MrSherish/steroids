@@ -22,9 +22,7 @@ private:
     
     void sendFruits();
 
-    void snakeMoved(const Snake &s);
-
-    void sendMessages();
+    void broadcastSnapshot();
 
     int getPlayerId(uint32_t ip, uint16_t port);
 
@@ -39,8 +37,6 @@ private:
     void handleFruits();
 
     void handleEating(Snake &snake, Fruit &fruit);
-
-    void broadcastSnakeMoved();
 
     void killSnake(Snake &snake);
 

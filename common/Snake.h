@@ -27,6 +27,10 @@ struct Snake {
     Snake() = default;
 
     void proceed(int arenaWidth, int arenaHeight);
+
+    nlohmann::json toJson() const;
+
+    static Snake fromJson(nlohmann::json j);
 };
 
 

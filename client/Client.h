@@ -20,8 +20,6 @@ private:
 
     void onPlayerConnected(json j);
 
-    void onSnakeMoved(json j);
-
     void sendMessage(json j);
 
     void onHello(json json);
@@ -38,6 +36,7 @@ public:
 
     void changeDir(vec2 dir);
 
+    void onSnapshot(json j);
 };
 
 

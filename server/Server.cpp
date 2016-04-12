@@ -73,6 +73,7 @@ int Server::getPlayerId(uint32_t ip, uint16_t port) {
         return it->playerId;
     }
 }
+
 Snake & Server::getPlayerSnake(int playerId) {
     auto & snakes = arena.snakes;
     auto it = std::find_if(snakes.begin(), snakes.end(), [=](Snake & s) {
@@ -82,8 +83,29 @@ Snake & Server::getPlayerSnake(int playerId) {
     return *it;
 }
 
-void Server::sendMessages() {
+void Server::broadcastSnapshot() {
+    std::vector<json> players;
+    for (const Player &player : arena.players) {
+        players.push_back(player.toJson());
+    }
 
+    std::vector<json> snakes;
+    for (const Snake &snake : arena.snakes) {
+        snakes.push_back(snake.toJson());
+    }
+
+    std::vector<json> fruits;
+    for (const Fruit &fruit : arena.fruits) {
+        fruits.push_back(fruit.toJson());
+    }
+
+    json j = {
+            {"message", "snapshot"},
+            {"players", players},
+            {"snakes", snakes},
+            {"fruits", fruits}
+    };
+    broadcast(j);
 }
 
 Server::Server(Arena &arena) : socket(PORT), arena(arena) { }
@@ -105,7 +127,6 @@ void Server::tick() {
     moveSnakes();
     handleFruits();
     spawnFruit();
-    broadcastSnakeMoved();
     sendFruits();
 }
 
@@ -115,7 +136,7 @@ void Server::run() {
     int ticks = 0;
     while (ticks != INT_MAX) {
         receiveMessages();
-        sendMessages();
+        broadcastSnapshot();
 
         if(ticks % (SERVER_TICKRATE / ARENA_TICKRATE) == 0) {
             tick();
@@ -147,12 +168,6 @@ void Server::handleCollisions() {
 
     for (Snake *s : snakesToKill) {
         killSnake(*s);
-    }
-}
-
-void Server::broadcastSnakeMoved() {
-    for (Snake &s : arena.snakes) {
-        snakeMoved(s);
     }
 }
 
@@ -247,21 +262,6 @@ void Server::killSnake(Snake &s) {
     broadcast(j);
 }
 
-void Server::snakeMoved(const Snake &s) {
-    std::vector<std::vector<int>> vec;
-    for (auto seg : s.segments) {
-        std::vector<int> pos {seg.pos.x, seg.pos.y};
-        vec.push_back(pos);
-    }
-    
-    json j = {
-        {"message", "snakeMoved"},
-        {"playerId", s.playerId},
-        {"segments", vec}
-    };
-    broadcast(j);
-}
-
 void Server::onConnect(Packet p) {
     json j = p.data;
     uint8_t r = j["color"][0];
@@ -307,8 +307,6 @@ void Server::onConnect(Packet p) {
         Snake snake = makeSnake(newPlayer.playerId);
         snake.color = color;
         arena.snakes.push_back(snake);
-        
-        snakeMoved(snake);
     } else {
         std::cerr << "Player #" << playerId << " tries to connect though did not disconnect." << std::endl;
     }

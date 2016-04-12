@@ -10,7 +10,7 @@ struct Color {
 
     Color(uint8_t r = 255, uint8_t g = 255, uint8_t b = 255, uint8_t a = 255) : r(r), g(g), b(b), a(a) {}
 
-    nlohmann::json toJson() {
+    nlohmann::json toJson() const {
         std::vector<int> vec {r, g, b};
         return vec;
     }

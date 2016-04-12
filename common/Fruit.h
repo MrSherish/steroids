@@ -9,6 +9,10 @@ struct Fruit {
     int type;
 
     Fruit(int type = 0, vec2 p = { 0,0 }) : pos(p), type(type) {}
+
+    nlohmann::json toJson() const;
+
+    static Fruit fromJson(nlohmann::json j);
 };
 
 

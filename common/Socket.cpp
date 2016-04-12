@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-constexpr int PACKET_SIZE = 1024;
+constexpr int PACKET_SIZE = 8 * 1024;
 
 using nlohmann::json;
 

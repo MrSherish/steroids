@@ -60,14 +60,8 @@ void Client::receiveMessages() {
             onHello(j);
         } else if (message == "playerConnected") {
             onPlayerConnected(j);
-        } else if (message == "snakeMoved") {
-            onSnakeMoved(j);
-        } else if (message == "fruits") {
-            arena.fruits.clear();
-            std::vector<json> fruits = j["fruits"];
-            for (auto &f :fruits){
-                addFruit(f);
-            }
+        } else if (message == "snapshot") {
+            onSnapshot(j);
         }
     }
 }
@@ -96,22 +90,6 @@ static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec
     return segments;
 }
 
-void Client::onSnakeMoved(json j) {
-    int playerId = j["playerId"];
-    std::vector<std::vector<int>> vec = j["segments"];
-
-    auto &snakes = arena.snakes;
-    auto it = std::find_if(snakes.begin(), snakes.end(), [=](Snake &s) {
-        return s.playerId == playerId;
-    });
-    if (it != snakes.end()) {
-        Snake &s = *it;
-        s.segments = makeSegments(vec);
-    } else {
-        std::cerr << "No snake found for player #" << playerId << std::endl;
-    }
-}
-
 Client::Client(
         Arena &world,
         std::string serverHost,
@@ -137,8 +115,23 @@ void Client::addSnake(int playerId, Color color) {
     arena.snakes.push_back(snake);
 }
 
+void Client::onSnapshot(json j) {
+    std::vector<Player> players;
+    for (const json &pj : j["players"]) {
+        players.push_back(Player::fromJson(pj));
+    }
 
+    std::vector<Snake> snakes;
+    for (const json &sj : j["snakes"]) {
+        snakes.push_back(Snake::fromJson(sj));
+    }
 
+    std::vector<Fruit> fruits;
+    for (const json &fj : j["fruits"]) {
+        fruits.push_back(Fruit::fromJson(fj));
+    }
 
-
-
+    arena.players = players;
+    arena.snakes = snakes;
+    arena.fruits = fruits;
+}
