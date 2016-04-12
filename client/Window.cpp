@@ -3,6 +3,7 @@
 
 const auto TITLE = "Snake";
 const auto charset_file = "charset_black.bmp";
+const auto fruit_file = "fruit.bmp";
 
 const auto SEGMENT_WIDTH = 32; // px
 const auto SEGMENT_HEIGHT = SEGMENT_WIDTH; // px
@@ -48,7 +49,6 @@ void Window::drawSnakes() {
 
 void Window::drawFruits() {
     for (Fruit f : arena.fruits) {
-        SDL_SetRenderDrawColor(renderer, 75, 75, 75, 0);
 
         SDL_Rect r;
         r.x = f.pos.x * SEGMENT_WIDTH;
@@ -56,16 +56,7 @@ void Window::drawFruits() {
         r.w = SEGMENT_WIDTH;
         r.h = SEGMENT_HEIGHT;
 
-        SDL_RenderFillRect(renderer, &r);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
-        r.x = f.pos.x * SEGMENT_WIDTH + SEGMENT_WIDTH / 3;
-        r.y = f.pos.y * SEGMENT_HEIGHT + SEGMENT_HEIGHT / 3;
-        r.w = SEGMENT_WIDTH / 3;
-        r.h = SEGMENT_HEIGHT / 3;
-
-        SDL_RenderFillRect(renderer, &r);
+        SDL_RenderCopy(renderer, fruit, NULL, &r);
     }
 }
 
@@ -76,6 +67,15 @@ void Window::drawUI() {
         drawString(a.getMessage(), 10, WINDOW_HEIGHT - annoucementYOffset);
         annoucementYOffset += 12;
     }
+}
+
+void Window::loadTexture(SDL_Texture ** t, const char * file) {
+    SDL_Surface *tempSurface = SDL_LoadBMP(file);
+    assert(tempSurface);
+    SDL_SetColorKey(tempSurface, 1, SDL_MapRGB(tempSurface->format, 0xFF, 0xFF, 0xFF));
+    *t = SDL_CreateTextureFromSurface(renderer, tempSurface);
+    assert(charset);
+    SDL_FreeSurface(tempSurface);
 }
 
 void Window::drawString(std::string str, int x, int y) {
@@ -167,12 +167,8 @@ Window::Window(std::string serverHost, std::string nickname) : client(arena, ser
 
     assert(renderer);
 
-    SDL_Surface *charsetSurface = SDL_LoadBMP(charset_file);
-    assert(charsetSurface);
-    SDL_SetColorKey(charsetSurface, 1, SDL_MapRGB(charsetSurface->format, 0xFF, 0xFF, 0xFF));
-    charset = SDL_CreateTextureFromSurface(renderer, charsetSurface);
-    assert(charset);
-    SDL_FreeSurface(charsetSurface);
+    loadTexture(&charset, charset_file);
+    loadTexture(&fruit, fruit_file);
 }
 
 Window::~Window() {
