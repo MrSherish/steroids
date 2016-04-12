@@ -20,7 +20,7 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     SDL_Texture* charset = nullptr;
-    std::vector<SDL_Texture*> fruits;
+    std::vector<SDL_Texture*> fruit_textures;
     int fruit_texture_count = 0;
 
     Arena arena;
