@@ -2,9 +2,9 @@
 #include "../server/Server.h"
 
 const auto TITLE = "Snake";
-const auto charset_file = "charset_black.bmp";
-const auto fruit_file_start = "fruit";
-const auto fruit_file_end = ".bmp";
+const auto CHARSET_FILE = "charset_black.bmp";
+const auto FRUIT_FILE_START = "fruit";
+const auto FRUIT_FILE_END = ".bmp";
 
 const auto SEGMENT_WIDTH = 32; // px
 const auto SEGMENT_HEIGHT = SEGMENT_WIDTH; // px
@@ -82,7 +82,7 @@ void Window::drawFruits() {
         r.h = SEGMENT_HEIGHT;
 
         int t = (f.type > fruit_texture_count - 1) ? 0 : f.type;
-        SDL_RenderCopy(renderer, fruits.at(t), NULL, &r);
+        SDL_RenderCopy(renderer, fruit_textures.at(t), NULL, &r);
     }
 }
 
@@ -194,16 +194,16 @@ Window::Window(std::string serverHost, std::string nickname) : client(arena, ser
 
     assert(renderer);
 
-    charset = loadTexture(charset_file);
+    charset = loadTexture(CHARSET_FILE);
 
     SDL_Texture *temp;
-    std::string file = fruit_file_start;
-    file = file + '0' + fruit_file_end;
+    std::string file = FRUIT_FILE_START;
+    file = file + '0' + FRUIT_FILE_END;
     int i = 0;
     while (temp = loadTexture(file.c_str())) {
-        fruits.push_back(temp);
+        fruit_textures.push_back(temp);
         i++;
-        file = fruit_file_start + std::to_string(i) + fruit_file_end;
+        file = FRUIT_FILE_START + std::to_string(i) + FRUIT_FILE_END;
     }
     fruit_texture_count = i;
 }
