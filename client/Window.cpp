@@ -32,7 +32,7 @@ void Window::drawSnakes() {
         Color c = s.color;
 
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-
+        if (s.segments.size() == 0) continue;
         for (auto it = s.segments.begin(); it < s.segments.end()-1;it++) {
             auto next = it + 1;
             int sx = (*it).pos.x;

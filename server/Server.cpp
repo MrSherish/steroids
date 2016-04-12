@@ -127,11 +127,7 @@ void Server::tick() {
     moveSnakes();
     handleFruits();
     spawnFruit();
-<<<<<<< 6963d467ca85d6e28753d4968cfdb38904002460
     broadcastSnapshot();
-=======
-    sendFruits();
->>>>>>> Add snapshot synchronization mechanism
 }
 
 void Server::run() {
@@ -140,10 +136,6 @@ void Server::run() {
     int ticks = 0;
     while (ticks != INT_MAX) {
         receiveMessages();
-<<<<<<< 6963d467ca85d6e28753d4968cfdb38904002460
-=======
-        broadcastSnapshot();
->>>>>>> Add snapshot synchronization mechanism
 
         if(ticks % (SERVER_TICKRATE / ARENA_TICKRATE) == 0) {
             tick();
