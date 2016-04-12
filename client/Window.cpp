@@ -8,7 +8,8 @@ const auto FRUIT_FILE_END = ".bmp";
 
 const auto SEGMENT_WIDTH = 32; // px
 const auto SEGMENT_HEIGHT = SEGMENT_WIDTH; // px
-const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH;
+const auto POINT_SEGMENT = 80;
+const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH + POINT_SEGMENT;
 const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
 const int CLIENT_TICKRATE = 128;
 const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
@@ -133,6 +134,21 @@ void Window::drawUI() {
     for (Client::Announcement a : announcementsToDisplay) {
         drawString(a.getMessage(), 10, WINDOW_HEIGHT - annoucementYOffset);
         annoucementYOffset += 12;
+    }
+
+    SDL_Rect r;
+    r.x = Server::ARENA_WIDTH * SEGMENT_WIDTH;
+    r.y = 0;
+    r.w = 1;
+    r.h = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderFillRect(renderer, &r);
+
+    int pointsYOffset = 10;
+    for (Player &p : arena.players) {
+        drawString(p.nick + ": " + std::to_string(p.points), Server::ARENA_WIDTH * SEGMENT_WIDTH + 5, pointsYOffset);
+        pointsYOffset += 12;
+        if (pointsYOffset >= Server::ARENA_HEIGHT*SEGMENT_HEIGHT) break;
     }
 }
 
