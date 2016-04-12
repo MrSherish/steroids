@@ -6,11 +6,10 @@
 #include "Window.h"
 #include <fstream>
 using nlohmann::json;
-const std::string PATH = "../common/Config.json";
 
 int main (int argc, char** argv)
 {
-	std::ifstream configFile("../common/Config.json");
+	std::ifstream configFile("Config.json");
 	assert(configFile.good());
 	json configData;
 	configData << configFile;
