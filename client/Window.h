@@ -10,6 +10,9 @@
 #include "../common/Arena.h"
 #include "../server/Server.h"
 
+
+const auto NICK = "player0";
+
 class Window {
 private:
 
@@ -34,7 +37,7 @@ private:
     void drawUI();
 public:
 
-    Window(std::string serverHost);
+    Window(std::string serverHost, std::string nickname = NICK);
 
     ~Window();
 

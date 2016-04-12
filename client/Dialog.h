@@ -18,9 +18,9 @@ private:
     void drawString(std::string str, int x, int y);
 
 public:
-    Dialog(std::string message, Uint32 color);
+    Dialog(std::string input, Uint32 color);
     ~Dialog();
-    std::string show();
+    std::string show(std::string message);
 };
 
 

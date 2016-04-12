@@ -5,7 +5,7 @@ const auto DIALOG_HEIGHT = 100;
 const auto DIALOG_WIDTH = 220;
 const auto DIALOG_TICK_DELAY = 100;
 
-Dialog::Dialog(std::string message, Uint32 color) : message(message), color(color) {
+Dialog::Dialog(std::string input, Uint32 color) : message(""), input(input), color(color) {
 
     window = SDL_CreateWindow(
         "Dialog",
@@ -26,7 +26,8 @@ Dialog::Dialog(std::string message, Uint32 color) : message(message), color(colo
     SDL_FreeSurface(charsetSurface);
 }
 
-std::string Dialog::show() {
+std::string Dialog::show(std::string message) {
+    this->message = message;
     bool exitFlag = false;
     SDL_Event e;
     while (!exitFlag) {
