@@ -9,34 +9,55 @@ const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH;
 const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
 const int CLIENT_TICKRATE = 128;
 const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
-
-
+const int DEATH_BLINK_RATE = 2*CLIENT_TICKRATE;
 
 const auto NICK = "player0";
 
 void Window::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-
-    for (const Snake &s : arena.snakes) {
-        Color c = s.color;
-
-        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-
-        for (Snake::Segment seg : s.segments) {
-            int sx = seg.pos.x;
-            int sy = seg.pos.y;
-
-            SDL_Rect r;
-            r.x = sx * SEGMENT_WIDTH;
-            r.y = sy * SEGMENT_HEIGHT;
-            r.w = SEGMENT_WIDTH;
-            r.h = SEGMENT_HEIGHT;
-
-            SDL_RenderFillRect(renderer, &r);
+    SDL_RenderClear(renderer);    
+    
+    for (const Snake &s : arena.snakes){
+        if (s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2)){
+            Color c = s.color;
+            
+            SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+            
+            for (Snake::Segment seg : s.segments) {
+                int sx = seg.pos.x;
+                int sy = seg.pos.y;
+                
+                SDL_Rect r;
+                r.x = sx * SEGMENT_WIDTH;
+                r.y = sy * SEGMENT_HEIGHT;
+                r.w = SEGMENT_WIDTH;
+                r.h = SEGMENT_HEIGHT;
+                
+                SDL_RenderFillRect(renderer, &r);
+            }
         }
     }
-
+    
+    for (const Snake &s : arena.snakes) {
+        if (!s.isDying){
+            Color c = s.color;
+            
+            SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+            
+            for (Snake::Segment seg : s.segments) {
+                int sx = seg.pos.x;
+                int sy = seg.pos.y;
+                
+                SDL_Rect r;
+                r.x = sx * SEGMENT_WIDTH;
+                r.y = sy * SEGMENT_HEIGHT;
+                r.w = SEGMENT_WIDTH;
+                r.h = SEGMENT_HEIGHT;
+                
+                SDL_RenderFillRect(renderer, &r);
+            }
+        }
+    }
 
     for (Fruit f : arena.fruits) {
         SDL_SetRenderDrawColor(renderer, 75, 75, 75, 0);
@@ -141,6 +162,7 @@ void Window::enterEventLoop() {
     {
         handleEvents();
         client.receiveMessages();
+        client.removeSnakes();
         render();
         SDL_Delay(CLIENT_TICK_DELAY);
     }

@@ -30,11 +30,17 @@ private:
     
     void addFruit(json j);
 
+    void makeSnakeDying(int playerID);
+    
+    
+
 public:
 
     Client(Arena &world, std::string serverHost, std::string nick);
 
     void receiveMessages();
+    
+    void removeSnakes();
 
     void changeDir(vec2 dir);
 

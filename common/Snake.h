@@ -21,6 +21,8 @@ struct Snake {
     vec2 dir;
     Color color;
     bool alive = true;
+    bool isDying = false;
+    uint32_t deathTick = 0;
 
     Snake(vec2 pos, vec2 dir, Color color);
 

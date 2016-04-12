@@ -1,8 +1,8 @@
 #include "Client.h"
 
-const auto SERVER_HOST = "localhost";
-
 using nlohmann::json;
+
+int const TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 void Client::sendMessage(json j) {
     uint32_t serverIp = net::resolveHost(serverHost, Server::PORT);
@@ -20,8 +20,6 @@ void Client::addPlayer(int playerId, std::string nick, Color color) {
 
     addSnake(playerId, color);
 }
-
-
 
 void Client::addPlayer(json j) {
     int playerId = j["playerId"];
@@ -41,10 +39,6 @@ void Client::changeDir(vec2 dir) {
             {"message", "dir"},
             {"dir", vec}
     });
-}
-
-static void moveSnake(Snake &snake) {
-
 }
 
 void Client::receiveMessages() {
@@ -68,7 +62,29 @@ void Client::receiveMessages() {
             for (auto &f :fruits){
                 addFruit(f);
             }
+        } else if (message == "snakeDied"){
+            int playerID = j["playerId"];
+            makeSnakeDying(playerID);
         }
+    }
+}
+
+void Client::makeSnakeDying(int playerID){
+    for (Snake &s : arena.snakes){
+        if (s.playerId == playerID){
+            s.isDying = true;
+            s.deathTick = SDL_GetTicks();
+            break;
+        }
+    }
+}
+
+void Client::removeSnakes(){
+    for (auto s = arena.snakes.begin(); s < arena.snakes.end();){
+        if (s->isDying && SDL_GetTicks() - s->deathTick >= TICKS_AFTER_SNAKE_GETS_REMOVED){
+            s = arena.snakes.erase(s);
+        }
+        else s++;
     }
 }
 

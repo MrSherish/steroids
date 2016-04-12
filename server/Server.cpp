@@ -4,6 +4,7 @@
 const int SERVER_TICKRATE = 128;
 const int SERVER_TICK_DELAY = 1000 / SERVER_TICKRATE;
 const int ARENA_TICKRATE = 2;
+const int TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
 
@@ -107,6 +108,15 @@ void Server::tick() {
     spawnFruit();
     broadcastSnakeMoved();
     sendFruits();
+}
+
+void Server::removeSnakes(){
+    for (auto s = arena.snakes.begin(); s<arena.snakes.end();){
+        if (s->isDying && SDL_GetTicks() - s->deathTick >= TICKS_AFTER_SNAKE_GETS_REMOVED){
+            s = arena.snakes.erase(s);
+        }
+        else s++;
+    }
 }
 
 void Server::run() {
@@ -239,6 +249,8 @@ void Server::sendFruits() {
 }
 
 void Server::killSnake(Snake &s) {
+    s.isDying = true;
+    s.deathTick = SDL_GetTicks();
     s.alive = false;
     json j = {
         {"message", "snakeDied"},
