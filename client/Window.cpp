@@ -12,7 +12,7 @@ const auto WINDOW_WIDTH = Server::ARENA_WIDTH * SEGMENT_WIDTH;
 const auto WINDOW_HEIGHT = Server::ARENA_HEIGHT * SEGMENT_HEIGHT;
 const int CLIENT_TICKRATE = 128;
 const int CLIENT_TICK_DELAY = 1000 / CLIENT_TICKRATE;
-const int SEGMENT_BORDER = 4;
+const int SEGMENT_BORDER = 2;
 
 
 
@@ -45,26 +45,26 @@ void Window::drawSnakes() {
             if ((ny == 0 && sy == (Server::ARENA_HEIGHT - 1)) || (ny == (Server::ARENA_HEIGHT - 1) && sy == 0)) {
                 r.x = sx * SEGMENT_WIDTH + SEGMENT_BORDER;
                 r.y = 0;
-                r.w = SEGMENT_WIDTH - SEGMENT_BORDER;
-                r.h = SEGMENT_HEIGHT-SEGMENT_BORDER;
+                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
                 SDL_RenderFillRect(renderer, &r);
-                r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + SEGMENT_BORDER; //use the one that is not 0 at the time
+                r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
                 SDL_RenderFillRect(renderer, &r);
             }
             else if ((nx == 0 && sx == (Server::ARENA_WIDTH - 1)) || (nx == (Server::ARENA_WIDTH - 1) && sx == 0)) {
                 r.y = sy * SEGMENT_HEIGHT + SEGMENT_BORDER;
                 r.x = 0;
-                r.w = SEGMENT_WIDTH - SEGMENT_BORDER;
-                r.h = SEGMENT_HEIGHT - SEGMENT_BORDER;
+                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
+                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
                 SDL_RenderFillRect(renderer, &r);
-                r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + SEGMENT_BORDER; //use the one that is not 0 at the time
+                r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
                 SDL_RenderFillRect(renderer, &r);
             }
             else {
                 r.x = ((sx<nx) ? sx : nx) * SEGMENT_WIDTH + SEGMENT_BORDER;
                 r.y = ((sy<ny) ? sy : ny) * SEGMENT_HEIGHT + SEGMENT_BORDER;
-                r.w = SEGMENT_WIDTH - SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
-                r.h = SEGMENT_HEIGHT - SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
+                r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
+                r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
 
                 SDL_RenderFillRect(renderer, &r);
             }
