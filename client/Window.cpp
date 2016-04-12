@@ -19,6 +19,14 @@ void Window::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
+    drawFruits();
+    drawSnakes();
+    drawUI();
+
+    SDL_RenderPresent(renderer);
+}
+
+void Window::drawSnakes() {
     for (const Snake &s : arena.snakes) {
         Color c = s.color;
 
@@ -37,7 +45,9 @@ void Window::render() {
             SDL_RenderFillRect(renderer, &r);
         }
     }
+}
 
+void Window::drawFruits() {
     for (Fruit f : arena.fruits) {
         SDL_SetRenderDrawColor(renderer, 75, 75, 75, 0);
 
@@ -58,15 +68,15 @@ void Window::render() {
 
         SDL_RenderFillRect(renderer, &r);
     }
-		
+}
+
+void Window::drawUI() {
     std::vector<Client::Announcement> announcementsToDisplay = client.checkAnnouncements();
     int annoucementYOffset = 10;
     for (Client::Announcement a : announcementsToDisplay) {
         drawString(a.getMessage(), 10, WINDOW_HEIGHT - annoucementYOffset);
         annoucementYOffset += 12;
     }
-
-    SDL_RenderPresent(renderer);
 }
 
 void Window::drawString(std::string str, int x, int y) {
@@ -167,6 +177,8 @@ Window::Window(std::string serverHost) : client(arena, serverHost, NICK) {
 }
 
 Window::~Window() {
+    SDL_DestroyTexture(charset);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
