@@ -26,6 +26,12 @@ private:
     void render();
 
     void drawString(std::string str, int x, int y);
+
+    void drawSnakes();
+
+    void drawFruits();
+
+    void drawUI();
 public:
 
     Window(std::string serverHost);
