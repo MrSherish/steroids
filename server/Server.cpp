@@ -209,9 +209,18 @@ void Server::handleFruits() {
         }
     }
 }
+/*Add point amount corresponding to fruit type to player, who owns
+the snake playerID to be replaced by player's nick*/
+void Server::addPoints(const Fruit&f, const Snake&s){
+	assert(s.playerId <= arena.players.size());
+	Player* scorer = &arena.players[s.playerId - 1];
+	scorer->points += f.type;
+	std::cerr << scorer->nick << ":" << scorer->points<<std::endl;
+}
 
 void Server::handleEating(Snake &s, Fruit &f) {
     s.segments.front().fat = true;
+	addPoints(f,s);
 }
 
 void Server::broadcast(nlohmann::json j) {

@@ -13,8 +13,6 @@ private:
     std::string serverHost;
     Arena &arena;
     int myPlayerId = 0;
-	int points = 0;
-
     void addPlayer(int playerId, std::string nick, Color color);
 
     void addSnake(int playerId, Color color);

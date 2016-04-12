@@ -16,6 +16,8 @@ private:
 
     void receiveMessages();
 
+	void addPoints(const Fruit&f, const Snake&s);
+
     void broadcast(nlohmann::json j);
 
     void onConnect(Packet p);

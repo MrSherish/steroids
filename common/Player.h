@@ -8,6 +8,7 @@ struct Player {
     uint32_t ip = 0;
     uint16_t port = 0;
     std::string nick;
+	int points = 0;
 };
 
 
