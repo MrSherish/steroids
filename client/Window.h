@@ -20,7 +20,8 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     SDL_Texture* charset = nullptr;
-    SDL_Texture* fruit = nullptr;
+    std::vector<SDL_Texture*> fruits;
+    int fruit_texture_count = 0;
 
     Arena arena;
     Client client;
@@ -37,7 +38,7 @@ private:
 
     void drawUI();
 
-    void loadTexture(SDL_Texture **t, const char *file);
+    SDL_Texture* loadTexture(const char *file);
 public:
 
     Window(std::string serverHost, std::string nickname = NICK);

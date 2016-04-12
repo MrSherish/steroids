@@ -3,7 +3,8 @@
 
 const auto TITLE = "Snake";
 const auto charset_file = "charset_black.bmp";
-const auto fruit_file = "fruit.bmp";
+const auto fruit_file_start = "fruit";
+const auto fruit_file_end = ".bmp";
 
 const auto SEGMENT_WIDTH = 32; // px
 const auto SEGMENT_HEIGHT = SEGMENT_WIDTH; // px
@@ -56,7 +57,8 @@ void Window::drawFruits() {
         r.w = SEGMENT_WIDTH;
         r.h = SEGMENT_HEIGHT;
 
-        SDL_RenderCopy(renderer, fruit, NULL, &r);
+        int t = (f.type > fruit_texture_count - 1) ? 0 : f.type;
+        SDL_RenderCopy(renderer, fruits.at(t), NULL, &r);
     }
 }
 
@@ -69,13 +71,14 @@ void Window::drawUI() {
     }
 }
 
-void Window::loadTexture(SDL_Texture ** t, const char * file) {
+SDL_Texture * Window::loadTexture(const char * file) {
     SDL_Surface *tempSurface = SDL_LoadBMP(file);
-    assert(tempSurface);
+    if (tempSurface == 0) return 0;
     SDL_SetColorKey(tempSurface, 1, SDL_MapRGB(tempSurface->format, 0xFF, 0xFF, 0xFF));
-    *t = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    assert(charset);
+    SDL_Texture *t = SDL_CreateTextureFromSurface(renderer, tempSurface);
+    if (t == 0) return 0;
     SDL_FreeSurface(tempSurface);
+    return t;
 }
 
 void Window::drawString(std::string str, int x, int y) {
@@ -167,8 +170,18 @@ Window::Window(std::string serverHost, std::string nickname) : client(arena, ser
 
     assert(renderer);
 
-    loadTexture(&charset, charset_file);
-    loadTexture(&fruit, fruit_file);
+    charset = loadTexture(charset_file);
+
+    SDL_Texture *temp;
+    std::string file = fruit_file_start;
+    file = file + '0' + fruit_file_end;
+    int i = 0;
+    while (temp = loadTexture(file.c_str())) {
+        fruits.push_back(temp);
+        i++;
+        file = fruit_file_start + std::to_string(i) + fruit_file_end;
+    }
+    fruit_texture_count = i;
 }
 
 Window::~Window() {
