@@ -52,10 +52,10 @@ void Server::onDir(Packet p) {
     if (y < -1) y = -1;
     if (y > 1) y = 1;
     vec2 dir {x, y};
-
+    
     if (playerId) {
         Snake & snake = getPlayerSnake(playerId);
-        if(snake.dir + dir != vec2{0, 0}) {
+        if(snake.dir + dir != vec2{0, 0} && snake.segments.at(0).pos + dir != snake.segments.at(1).pos) {
             snake.dir = dir;
         }
     } else {
