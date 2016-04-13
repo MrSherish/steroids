@@ -23,10 +23,10 @@ Socket::~Socket() {
 }
 
 void Socket::send(const Packet &packet) {
-    std::string jd = packet.data.dump();
-
     SDLNet_Write32(packet.ip, &pt->address.host);
     SDLNet_Write16(packet.port, &pt->address.port);
+
+    const std::string & jd = packet.data;
 
     assert(jd.length() + 1 <= PACKET_SIZE);
 
@@ -44,13 +44,9 @@ bool Socket::receive(Packet &packet) {
         char *data = (char*) pt->data;
         data[PACKET_SIZE - 1] = '\0';
 
-        std::string js = data;
-        json j = json::parse(js);
-
         packet.ip = SDLNet_Read32(&pt->address.host);
         packet.port = SDLNet_Read16(&pt->address.port);
-
-        packet.data = j;
+        packet.data = data;
 
         return true;
     } else {

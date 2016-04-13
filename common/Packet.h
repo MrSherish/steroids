@@ -8,9 +8,9 @@
 struct Packet {
     uint32_t ip = 0;
     uint16_t port = 0;
-    nlohmann::json data;
+    std::string data;
 
-    Packet(uint32_t ip = 0, uint16_t port = 0, nlohmann::json data = {}) : ip(ip), port(port), data(data) {}
+    Packet(uint32_t ip = 0, uint16_t port = 0, std::string data = "") : ip(ip), port(port), data(data) {}
 };
 
 #endif //STEROIDS_PACKET_H

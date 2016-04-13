@@ -4,10 +4,12 @@ int const TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
 
-void Client::sendMessage(json j) {
+void Client::sendMessage(const json &j) {
     uint32_t serverIp = net::resolveHost(serverHost, Server::PORT);
     Packet p {serverIp, (uint16_t)Server::PORT};
-    p.data = j;
+    p.data = j.dump();
+
+    std::cerr << p.data << std::endl;
 
     socket.send(p);
 }
@@ -54,9 +56,9 @@ void Client::receiveMessages() {
     Packet p;
     while (socket.receive(p)) {
         std::cout << std::hex << p.ip << " " << p.port << std::endl;
-        std::cout << p.data.dump() << std::endl;
+        std::cout << p.data << std::endl;
 
-        json j = p.data;
+        json j = json::parse(p.data);
         std::string message = j["message"];
 
         if (message == "hello") {

@@ -34,7 +34,7 @@ private:
 
     void onPlayerConnected(json j);
 
-    void sendMessage(json j);
+    void sendMessage(const json &j);
 
     void onHello(json json);
 

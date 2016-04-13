@@ -13,11 +13,11 @@ void Server::receiveMessages() {
     Packet p;
 
     while (socket.receive(p)) {
-        json j = p.data;
+        json j = json::parse(p.data);
         std::string message = j["message"];
 
         std::cout << std::hex << p.ip << " " << p.port << std::endl;
-        std::cout << p.data.dump() << std::endl;
+        std::cout << p.data << std::endl;
 
         if (message == "connect") {
             onConnect(p);
@@ -44,7 +44,7 @@ static Snake makeSnake(int playerId) {
 
 void Server::onDir(Packet p) {
     int playerId = getPlayerId(p.ip, p.port);
-    json j = p.data;
+    json j = json::parse(p.data);
     std::vector<int> vec = j["dir"];
     int x = vec[0];
     int y = vec[1];
@@ -107,7 +107,8 @@ void Server::broadcastSnapshot() {
             {"snakes", snakes},
             {"fruits", fruits}
     };
-    broadcast(j);
+    std::string data = j.dump();
+    broadcast(data);
 }
 
 Server::Server(Arena &arena) : socket(PORT), arena(arena) { }
@@ -245,9 +246,9 @@ void Server::handleEating(Snake &s, Fruit &f) {
 	addPoints(f,s);
 }
 
-void Server::broadcast(nlohmann::json j) {
+void Server::broadcast(const std::string &data) {
     for (Player &player : arena.players) {
-        Packet p { player.ip, player.port, j };
+        Packet p { player.ip, player.port, data };
         socket.send(p);
     }
 }
@@ -260,11 +261,11 @@ void Server::killSnake(Snake &s) {
         {"message", "snakeDied"},
         {"playerId", s.playerId}
     };
-    broadcast(j);
+    broadcast(j.dump());
 }
 
 void Server::onConnect(Packet p) {
-    json j = p.data;
+    json j = json::parse(p.data);
     uint8_t r = j["color"][0];
     uint8_t g = j["color"][1];
     uint8_t b = j["color"][2];
@@ -290,11 +291,12 @@ void Server::onConnect(Packet p) {
         newPlayer.nick = j["nick"];
         arena.players.push_back(newPlayer);
         
-        p.data = {
+        json rj = {
             {"message", "hello"},
             {"playerId", newPlayer.playerId},
             {"players", players}
         };
+        p.data = rj.dump();
         socket.send(p);
         
         json cj = {
@@ -303,7 +305,7 @@ void Server::onConnect(Packet p) {
             {"nick", newPlayer.nick},
             {"color", color.toJson()}
         };
-        broadcast(cj);
+        broadcast(cj.dump());
         
         Snake snake = makeSnake(newPlayer.playerId);
         snake.color = color;

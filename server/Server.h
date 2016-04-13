@@ -18,7 +18,7 @@ private:
 
 	void addPoints(const Fruit&f, const Snake&s);
 
-    void broadcast(nlohmann::json j);
+    void broadcast(const std::string &data);
 
     void onConnect(Packet p);
 	
