@@ -7,8 +7,13 @@
 
 #include "vec2.h"
 #include "Color.h"
+#include "Fruit.h"
 
 struct Snake {
+    enum bonuses {
+        Greedy$nake,
+        Sprint, Nope
+    };
     struct Segment {
         vec2 pos;
         bool fat = false;
@@ -17,6 +22,8 @@ struct Snake {
     };
 
     int playerId = 0;
+    bonuses bonus = Nope;
+    int clock = 0;
     std::deque<Segment> segments;
     vec2 dir;
     Color color;
@@ -29,6 +36,10 @@ struct Snake {
     Snake() = default;
 
     void proceed(int arenaWidth, int arenaHeight);
+
+    void getBonus(const Fruit &f);
+
+    bool isGreedy();
 
     nlohmann::json toJson() const;
 

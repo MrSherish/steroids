@@ -9,6 +9,13 @@ Snake::Snake(vec2 pos, vec2 dir, Color color) : dir(dir), color(color) {
 void Snake::proceed(int arenaWidth, int arenaHeight) {
     Segment &fs = segments.front();
     Segment &bs = segments.back();
+    if (clock == 10) {
+        clock = 0;
+        bonus = Nope;
+    }
+    else if (clock > 0) {
+        clock++;
+    }
 
     vec2 fpos = fs.pos + dir;
     if (fpos.x < 0) fpos.x = arenaWidth + fpos.x;
@@ -56,3 +63,17 @@ Snake Snake::fromJson(nlohmann::json j) {
 
     return snake;
 }
+
+void Snake::getBonus(const Fruit &f) {
+    if (f.type == 1) {
+        bonus = Greedy$nake;
+        clock = 1;
+    }
+}
+
+bool Snake::isGreedy() {
+    return bonus == Greedy$nake;
+}
+
+
+

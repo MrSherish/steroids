@@ -150,7 +150,7 @@ void Server::run() {
         tick();
 
         int sleepTime = nextTickStart - SDL_GetTicks();
-        std::cerr << "Scheduled sleep time: " << sleepTime << " (" << arena.snakes.size() << " snakes)" << std::endl;
+        //std::cerr << "Scheduled sleep time: " << sleepTime << " (" << arena.snakes.size() << " snakes)" << std::endl;
         SDL_Delay((Uint32) std::max(0, sleepTime));
         ++ticks;
     }
@@ -235,14 +235,23 @@ void Server::handleFruits() {
 }
 /*Add point amount corresponding to fruit type to player, who owns
 the snake playerID to be replaced by player's nick*/
-void Server::addPoints(const Fruit &f, const Snake &s){
+void Server::addPoints(const Fruit &f, Snake &s) {
 	Player* scorer = &getPlayerByID(s.playerId);
-	scorer->points += f.type;
-	std::cerr << scorer->nick << ":" << scorer->points<<std::endl;
+    if (s.isGreedy()) {
+        scorer->points += 2 * f.type;
+        std::cerr << scorer->nick << ":" << scorer->points << " cuz iz greedy ( $ > $ )" << std::endl;
+    }
+    else {
+        scorer->points += f.type;
+        std::cerr << scorer->nick << ":" << scorer->points << std::endl;
+    }
 }
 
 void Server::handleEating(Snake &s, Fruit &f) {
     s.segments.front().fat = true;
+    if (f.type != 0) {
+        s.getBonus(f);
+    }
 	addPoints(f,s);
 }
 

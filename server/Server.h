@@ -16,7 +16,7 @@ private:
 
     void receiveMessages();
 
-	void addPoints(const Fruit&f, const Snake&s);
+	void addPoints(const Fruit &f, Snake &s);
 
     void broadcast(const std::string &data);
 
