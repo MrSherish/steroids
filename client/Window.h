@@ -4,7 +4,6 @@
 #include <SDL_net.h>
 #include <SDL.h>
 #include <cassert>
-#include <zconf.h>
 
 #include "../common/Config.h"
 #include "../common/Arena.h"
