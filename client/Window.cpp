@@ -33,48 +33,9 @@ void Window::drawSnakes() {
 
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
         if (s.segments.size() == 0) continue;
-        
+
         for (auto it = s.segments.begin(); it < s.segments.end()-1;it++) {
-            if (s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2)){
-                auto next = it + 1;
-                int sx = (*it).pos.x;
-                int sy = (*it).pos.y;
-                int nx = (*next).pos.x;
-                int ny = (*next).pos.y;
-                
-                SDL_Rect r;
-                
-                if ((ny == 0 && sy == (Server::ARENA_HEIGHT - 1)) || (ny == (Server::ARENA_HEIGHT - 1) && sy == 0)) {
-                    r.x = sx * SEGMENT_WIDTH + SEGMENT_BORDER;
-                    r.y = 0;
-                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
-                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
-                    SDL_RenderFillRect(renderer, &r);
-                    r.y = ((sy) ? sy : ny)*SEGMENT_HEIGHT + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
-                    SDL_RenderFillRect(renderer, &r);
-                }
-                else if ((nx == 0 && sx == (Server::ARENA_WIDTH - 1)) || (nx == (Server::ARENA_WIDTH - 1) && sx == 0)) {
-                    r.y = sy * SEGMENT_HEIGHT + SEGMENT_BORDER;
-                    r.x = 0;
-                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER;
-                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER;
-                    SDL_RenderFillRect(renderer, &r);
-                    r.x = ((sx) ? sx : nx)*SEGMENT_WIDTH + 2*SEGMENT_BORDER; //use the one that is not 0 at the time
-                    SDL_RenderFillRect(renderer, &r);
-                }
-                else {
-                    r.x = ((sx<nx) ? sx : nx) * SEGMENT_WIDTH + SEGMENT_BORDER;
-                    r.y = ((sy<ny) ? sy : ny) * SEGMENT_HEIGHT + SEGMENT_BORDER;
-                    r.w = SEGMENT_WIDTH - 2*SEGMENT_BORDER + ((sx!=nx) ? SEGMENT_WIDTH : 0);
-                    r.h = SEGMENT_HEIGHT - 2*SEGMENT_BORDER + ((sy!=ny) ? SEGMENT_HEIGHT : 0);
-                    
-                    SDL_RenderFillRect(renderer, &r);
-                }
-            }
-        }
-        
-        for (auto it = s.segments.begin(); it < s.segments.end()-1;it++) {
-            if (s.alive){
+            if (s.alive || (s.isDying && ((SDL_GetTicks() - s.deathTick) % DEATH_BLINK_RATE < DEATH_BLINK_RATE/2))){
                 auto next = it + 1;
                 int sx = (*it).pos.x;
                 int sy = (*it).pos.y;
@@ -131,7 +92,7 @@ void Window::drawFruits() {
 void Window::drawUI() {
     std::vector<Client::Announcement> announcementsToDisplay = client.checkAnnouncements();
     int annoucementYOffset = 10;
-    for (Client::Announcement a : announcementsToDisplay) {
+    for (auto &a : announcementsToDisplay) {
         drawString(a.getMessage(), 10, WINDOW_HEIGHT - annoucementYOffset);
         annoucementYOffset += 12;
     }
@@ -257,7 +218,7 @@ Window::Window(std::string serverHost, Config & cfg) : client(arena, serverHost,
     std::string file = FRUIT_FILE_START;
     file = file + '0' + FRUIT_FILE_END;
     int i = 0;
-    while (temp = loadTexture(file.c_str())) {
+    while (temp = loadTexture(file.c_str())) { //intentional
         fruit_textures.push_back(temp);
         i++;
         file = FRUIT_FILE_START + std::to_string(i) + FRUIT_FILE_END;
