@@ -211,7 +211,7 @@ void Server::handleSnakesCollision(Snake &a, Snake &b, std::vector<Snake *> &sna
         snakesToKill.push_back(&b);
     } else {
         int i = 0;
-        for (auto as : a_.segments) {
+        for (auto &as : a_.segments) {
             if (i != 0 && as.pos == bh_) {
                 std::cerr << "Standard collision " << a.playerId << ":" << b.playerId << std::endl;
                 snakesToKill.push_back(&b);

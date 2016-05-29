@@ -1,6 +1,4 @@
 #include "Window.h"
-#include "../server/Server.h"
-#include "../common/Config.h"
 const auto TITLE = "Snake";
 const auto CHARSET_FILE = "charset_black.bmp";
 const auto FRUIT_FILE_START = "fruit";
@@ -76,7 +74,7 @@ void Window::drawSnakes() {
 }
 
 void Window::drawFruits() {
-    for (Fruit f : arena.fruits) {
+    for (auto &f : arena.fruits) {
 
         SDL_Rect r;
         r.x = f.pos.x * SEGMENT_WIDTH;
@@ -106,7 +104,7 @@ void Window::drawUI() {
     SDL_RenderFillRect(renderer, &r);
 
     int pointsYOffset = 10;
-    for (Player &p : arena.players) {
+    for (auto &p : arena.players) {
         drawString(p.nick + ": " + std::to_string(p.points), Server::ARENA_WIDTH * SEGMENT_WIDTH + 5, pointsYOffset);
         pointsYOffset += 12;
         if (pointsYOffset >= Server::ARENA_HEIGHT*SEGMENT_HEIGHT) break;
@@ -218,7 +216,7 @@ Window::Window(std::string serverHost, Config & cfg) : client(arena, serverHost,
     std::string file = FRUIT_FILE_START;
     file = file + '0' + FRUIT_FILE_END;
     int i = 0;
-    while (temp = loadTexture(file.c_str())) { //intentional
+    while ((temp = loadTexture(file.c_str()))) { //intentional
         fruit_textures.push_back(temp);
         i++;
         file = FRUIT_FILE_START + std::to_string(i) + FRUIT_FILE_END;

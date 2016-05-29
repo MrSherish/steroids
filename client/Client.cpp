@@ -110,7 +110,7 @@ void Client::onPlayerConnected(json j) {
 
 static std::deque<Snake::Segment> makeSegments(std::vector<std::vector<int>> vec) {
     std::deque<Snake::Segment> segments;
-    for (auto posv : vec) {
+    for (auto &posv : vec) {
         int x = posv[0];
         int y = posv[1];
         vec2 pos {x, y};

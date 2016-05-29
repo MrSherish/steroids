@@ -29,7 +29,7 @@ void Snake::proceed(int arenaWidth, int arenaHeight) {
 
 nlohmann::json Snake::toJson() const {
     std::vector<json> segs;
-    for (auto seg : segments) {
+    for (auto &seg : segments) {
         segs.push_back(seg.pos.toJson());
     }
 
@@ -47,7 +47,7 @@ Snake Snake::fromJson(nlohmann::json j) {
     snake.color = Color::fromJson(j["color"]);
 
     std::deque<Segment> segs;
-    for (json sj : j["segments"]) {
+    for (json &sj : j["segments"]) {
         Segment seg {vec2::fromJson(sj)};
         segs.push_back(seg);
     }

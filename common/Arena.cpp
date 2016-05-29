@@ -1,6 +1,4 @@
 #include "Arena.h"
-#include <random>
-
 
 void Arena::createFruitsOnArena() {
     for (int i = 0; i < STARTING_NUMBER_OF_FRUITS; i++) {
@@ -9,11 +7,11 @@ void Arena::createFruitsOnArena() {
 }
 
 bool Arena::canPlaceFruit(vec2 pos) {
-    for (Fruit &f : fruits) {
+    for (auto &f : fruits) {
         if (f.pos == pos) return false;
     }
-    for (Snake &s : snakes) {
-        for (Snake::Segment &a : s.segments) {
+    for (auto &s : snakes) {
+        for (auto &a : s.segments) {
             if (a.pos == pos) return false;
         }
     }
