@@ -4,6 +4,7 @@
 
 #include "../common/Socket.h"
 #include "../common/Arena.h"
+#include "../common/ServerConfig.h"
 
 using nlohmann::json;
 
@@ -13,6 +14,7 @@ private:
     Socket socket;
     Arena &arena;
     int nextPlayerId = 0;
+    ServerConfig config;
 
     void receiveMessages();
 
@@ -54,7 +56,7 @@ public:
     static const auto ARENA_HEIGHT = 17; // segments
     static const int PORT = 28666;
 
-    Server(Arena &world);
+    Server(Arena &arena, ServerConfig cfg);
 
     void restart();
 

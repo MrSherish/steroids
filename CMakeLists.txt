@@ -28,7 +28,9 @@ set(COMMON_SOURCES
         common/Fruit.h
         common/Fruit.cpp
         common/Config.h
-        common/Config.cpp)
+        common/Config.cpp
+        common/ServerConfig.h
+        common/ServerConfig.cpp)
 
 set(SERVER_SOURCES
         ${COMMON_SOURCES}

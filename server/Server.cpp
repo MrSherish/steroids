@@ -1,13 +1,16 @@
 #include <climits>
 #include "Server.h"
+#include "../common/ServerConfig.h"
 
 const int SERVER_TICKRATE = 128;
 const int SERVER_TICK_INTERVAL = 1000 / SERVER_TICKRATE;
-const int ARENA_TICKRATE = 8;
-const int ARENA_TICK_INTERVAL = 1000 / ARENA_TICKRATE;
 const int TICKS_AFTER_SNAKE_GETS_REMOVED = 5000;
 
 using nlohmann::json;
+
+static int arenaTickInterval(int serverTickRate) {
+    return 1000 / serverTickRate;
+}
 
 void Server::receiveMessages() {
     Packet p;
@@ -111,7 +114,7 @@ void Server::broadcastSnapshot() {
     broadcast(data);
 }
 
-Server::Server(Arena &arena) : socket(PORT), arena(arena) { }
+Server::Server(Arena &arena, ServerConfig cfg) : socket(PORT), arena(arena), config(cfg) { }
 
 void Server::restart() {
     arena = Arena{ARENA_WIDTH, ARENA_HEIGHT};
@@ -145,7 +148,7 @@ void Server::run() {
     int ticks = 0;
     while (ticks != INT_MAX) {
         receiveMessages();
-        int nextTickStart = SDL_GetTicks() + ARENA_TICK_INTERVAL;
+        int nextTickStart = SDL_GetTicks() + arenaTickInterval(config.arenaTickrate);
 
         tick();
 

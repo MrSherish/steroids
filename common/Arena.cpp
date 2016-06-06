@@ -1,4 +1,5 @@
 #include "Arena.h"
+#include <random>
 
 void Arena::createFruitsOnArena() {
     for (int i = 0; i < STARTING_NUMBER_OF_FRUITS; i++) {
